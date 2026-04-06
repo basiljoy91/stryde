@@ -1,0 +1,99 @@
+@config "../tailwind.config.ts";
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+@import "./animations.css";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #f5f5f0;
+  --brand-accent: #e8ff47;
+  --brand-mid: #1c1c1c;
+  --brand-muted: #6b6b6b;
+  --brand-ember: #ff5336;
+  --brand-copper: #8a3d16;
+  --radius-card: 1.75rem;
+  --radius-panel: 2.5rem;
+  --shadow-glow: 0 0 0 1px rgba(232, 255, 71, 0.18),
+    0 24px 60px rgba(232, 255, 71, 0.14);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-black: var(--background);
+  --color-brand-white: var(--foreground);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-mid: var(--brand-mid);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-ember: var(--brand-ember);
+  --color-brand-copper: var(--brand-copper);
+  --font-sans: var(--font-space-grotesk);
+  --font-display: var(--font-bebas-neue);
+  --font-mono: var(--font-space-grotesk);
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+
+  html {
+    @apply bg-background text-foreground;
+  }
+
+  body {
+    @apply min-h-screen bg-background bg-mesh-glow text-foreground antialiased;
+    font-feature-settings: "ss01" on, "cv01" on;
+  }
+
+  main {
+    @apply flex-1;
+  }
+
+  img {
+    @apply select-none;
+  }
+
+  ::selection {
+    background: rgba(232, 255, 71, 0.95);
+    color: #0a0a0a;
+  }
+}
+
+@layer components {
+  .container-shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-8 lg:px-10;
+  }
+
+  .glass-panel {
+    @apply rounded-[var(--radius-card)] border border-white/10 bg-white/[0.04] shadow-panel backdrop-blur-2xl;
+  }
+
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.4em] text-brand-muted;
+  }
+
+  .section-heading {
+    @apply font-display text-5xl uppercase leading-none tracking-display text-brand-white sm:text-6xl lg:text-7xl;
+  }
+
+  .accent-line {
+    @apply h-px bg-gradient-to-r from-transparent via-brand-accent/80 to-transparent;
+  }
+}
+
+@media (pointer: fine) {
+  body,
+  a,
+  button {
+    cursor: none;
+  }
+}
+
+@media (pointer: coarse) {
+  body,
+  a,
+  button {
+    cursor: auto;
+  }
+}

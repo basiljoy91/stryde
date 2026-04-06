@@ -1,0 +1,21 @@
+@layer utilities {
+  .text-reveal-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+
+  .text-reveal-char {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+
+  .parallax-layer {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .clip-fade {
+    clip-path: inset(0 0 0 0 round 2rem);
+  }
+}
