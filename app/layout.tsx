@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Space_Grotesk } from "next/font/google";
 
 import { CustomCursor } from "@/components/layout/CustomCursor";
+import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Footer } from "@/components/layout/Footer";
 import { LenisProvider } from "@/components/layout/LenisProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 
 import "./globals.css";
 
@@ -25,8 +27,20 @@ export const metadata: Metadata = {
     default: "Stryde | Performance Lab",
     template: "%s | Stryde",
   },
-  description:
-    "Stryde is a motion-led footwear concept built with editorial layout, smooth scroll, and reusable interaction primitives.",
+  metadataBase: new URL(siteConfig.siteUrl),
+  description: siteConfig.description,
+  openGraph: {
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    type: "website",
+    url: absoluteUrl("/"),
+  },
+  twitter: {
+    card: "summary_large_image",
+    description: siteConfig.description,
+    title: siteConfig.name,
+  },
 };
 
 export default function RootLayout({
@@ -44,6 +58,7 @@ export default function RootLayout({
         <LenisProvider>
           <CustomCursor />
           <Navbar />
+          <CartDrawer />
           <PageTransition>{children}</PageTransition>
           <Footer />
         </LenisProvider>

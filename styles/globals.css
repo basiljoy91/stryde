@@ -54,6 +54,10 @@
     @apply select-none;
   }
 
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-accent/80 ring-offset-2 ring-offset-brand-black;
+  }
+
   ::selection {
     background: rgba(232, 255, 71, 0.95);
     color: #0a0a0a;

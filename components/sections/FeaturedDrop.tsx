@@ -1,135 +1,122 @@
-import { ArrowRight } from "lucide-react";
+"use client";
 
-import { FadeUp } from "@/components/animations/FadeUp";
-import { MagneticButton } from "@/components/animations/MagneticButton";
+import Image from "next/image";
+import { useRef } from "react";
+
+import { ArrowUpRight } from "lucide-react";
+
+import { useGSAP } from "@/hooks/useGSAP";
+import { gsap } from "@/lib/gsap";
+import { featuredDrops } from "@/lib/constants";
+import { TextReveal } from "@/components/animations/TextReveal";
 import { Badge } from "@/components/ui/Badge";
 import { Tag } from "@/components/ui/Tag";
-import { designPillars, featuredDrops } from "@/lib/constants";
 
 export function FeaturedDrop() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useGSAP(
+    () => {
+      if (!sectionRef.current) {
+        return;
+      }
+
+      const cards = gsap.utils.toArray<HTMLElement>(
+        ".drop-card",
+        sectionRef.current,
+      );
+
+      gsap.from(cards, {
+        autoAlpha: 0,
+        duration: 0.95,
+        ease: "power3.out",
+        stagger: 0.14,
+        y: 72,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 72%",
+          once: true,
+        },
+      });
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section id="featured" className="pb-24 sm:pb-28 lg:pb-32">
-      <div className="container-shell">
-        <FadeUp className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <section
+      id="featured"
+      ref={sectionRef}
+      className="relative overflow-hidden bg-brand-white py-24 text-brand-black sm:py-28 lg:py-30"
+    >
+      <div className="grain-overlay absolute inset-0 opacity-[0.2]" />
+      <div className="container-shell relative z-10">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="eyebrow">Featured Drop / Foundation</p>
-            <h2 className="section-heading mt-3 max-w-3xl">
-              System First. Product Ready.
-            </h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-black/45">
+              Featured Drops
+            </p>
+            <TextReveal
+              as="h2"
+              text="Built To Be Seen."
+              className="mt-3 font-display text-[clamp(4.25rem,10vw,8rem)] uppercase leading-[0.88] tracking-[0.06em] text-brand-black"
+            />
           </div>
-          <p className="max-w-xl text-base leading-8 text-white/65">
-            The shell is now driven by shared tokens, motion primitives, and a
-            reusable layout kit so every future page can inherit the same brand
-            intensity without rebuilding the basics.
+          <p className="max-w-2xl text-base leading-8 text-black/60">
+            Three launch cards, one motion language: hover-driven zoom, soft
+            gradient lift, and a bottom CTA that slides into view just as the
+            silhouette starts to push forward.
           </p>
-        </FadeUp>
-
-        <div className="mt-10 grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-          <FadeUp>
-            <article className="glass-panel clip-fade h-full overflow-hidden p-8 sm:p-10">
-              <Tag>Velocity pack</Tag>
-              <div className="mt-6 flex flex-wrap items-start justify-between gap-5">
-                <div>
-                  <h3 className="font-display text-5xl uppercase leading-none text-brand-white sm:text-6xl">
-                    Drop Architecture
-                  </h3>
-                  <p className="mt-5 max-w-2xl text-base leading-8 text-white/68">
-                    Oversized display typography, matte-black foundations,
-                    editorial spotlighting, and kinetic hover states establish
-                    the direction before the full catalogue arrives.
-                  </p>
-                </div>
-                <Badge variant="accent">Reusable shell</Badge>
-              </div>
-
-              <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                {designPillars.map((pillar) => (
-                  <div
-                    key={pillar.label}
-                    className="rounded-[1.5rem] border border-white/10 bg-black/35 p-4"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-muted">
-                      {pillar.label}
-                    </p>
-                    <p className="mt-3 text-base leading-7 text-brand-white">
-                      {pillar.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </article>
-          </FadeUp>
-
-          <div className="grid gap-5">
-            <FadeUp>
-              <article
-                id="system"
-                className="glass-panel rounded-[2rem] p-7"
-              >
-                <Tag>Design DNA</Tag>
-                <h3 className="mt-5 font-display text-4xl uppercase leading-none text-brand-white">
-                  Material Contrast
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-white/65">
-                  Transparent chrome, blurred cards, accent glows, and copper
-                  contour lines echo the reference while staying flexible enough
-                  for new campaigns.
-                </p>
-              </article>
-            </FadeUp>
-
-            <FadeUp delay={0.08}>
-              <article className="glass-panel rounded-[2rem] p-7">
-                <Tag>Motion stack</Tag>
-                <h3 className="mt-5 font-display text-4xl uppercase leading-none text-brand-white">
-                  Scroll + Reveal
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-white/65">
-                  Lenis smooths the experience, GSAP handles text splitting and
-                  parallax, and Framer Motion covers route and entrance
-                  choreography.
-                </p>
-                <div className="mt-6">
-                  <MagneticButton href="#newsletter" variant="secondary" size="sm">
-                    Join Updates
-                    <ArrowRight className="h-4 w-4" />
-                  </MagneticButton>
-                </div>
-              </article>
-            </FadeUp>
-          </div>
         </div>
 
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
-          {featuredDrops.map((drop, index) => (
-            <FadeUp key={drop.id} delay={0.05 * index}>
-              <article
-                className="glass-panel clip-fade relative flex h-full overflow-hidden p-6"
-                data-cursor="card"
-                data-cursor-label="View"
-              >
-                <div
-                  className={`absolute inset-x-0 top-0 h-40 bg-gradient-to-b ${drop.accentClass}`}
+        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          {featuredDrops.map((drop) => (
+            <article
+              key={drop.id}
+              className="drop-card group relative min-h-[33rem] overflow-hidden rounded-[2.3rem] bg-[#101113] p-6 text-brand-white"
+              data-cursor="card"
+              data-cursor-label="View"
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${drop.accentClass} opacity-70 transition duration-500 group-hover:opacity-100`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-black/82 to-transparent" />
+
+              <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.12),transparent_36%)] opacity-70 transition duration-500 group-hover:opacity-100" />
+                <Image
+                  src={drop.image}
+                  alt={drop.name}
+                  fill
+                  className={`object-contain p-6 transition-transform duration-700 ease-out group-hover:scale-[1.08] ${drop.imageClass}`}
                 />
-                <div className="relative z-10 flex h-full flex-col">
-                  <div className="flex items-start justify-between gap-4">
-                    <Tag>Edition {drop.id}</Tag>
-                    <Badge variant="dark">{drop.price}</Badge>
-                  </div>
-                  <h3 className="mt-8 font-display text-4xl uppercase leading-none text-brand-white">
+              </div>
+
+              <div className="relative z-10 flex h-full flex-col justify-between">
+                <div className="flex items-start justify-between gap-4">
+                  <Tag>Edition {drop.id}</Tag>
+                  <Badge variant="dark">{drop.price}</Badge>
+                </div>
+
+                <div className="mt-auto">
+                  <h3 className="font-display text-4xl uppercase leading-none">
                     {drop.name}
                   </h3>
-                  <p className="mt-4 flex-1 text-sm leading-7 text-white/65">
+                  <p className="mt-4 max-w-sm text-sm leading-7 text-white/65">
                     {drop.summary}
                   </p>
-                  <div className="accent-line mt-6 mb-4" />
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-muted">
-                    Built to expand into product cards, category pages, and
-                    campaign modules next.
-                  </p>
+                  <div className="mt-7 flex items-center justify-between">
+                    <span className="text-xs uppercase tracking-[0.28em] text-white/40">
+                      View details
+                    </span>
+                    <span className="inline-flex translate-y-5 items-center gap-2 text-sm font-semibold uppercase tracking-[0.24em] text-brand-accent opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                      View
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  </div>
                 </div>
-              </article>
-            </FadeUp>
+              </div>
+            </article>
           ))}
         </div>
       </div>

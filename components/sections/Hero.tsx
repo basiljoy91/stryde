@@ -1,193 +1,332 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useRef } from "react";
 
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-import { FadeUp } from "@/components/animations/FadeUp";
+import { useGSAP } from "@/hooks/useGSAP";
+import { SplitText, gsap } from "@/lib/gsap";
+import {
+  heroIntroLabels,
+  heroProduct,
+  zoomFeatureTags,
+} from "@/lib/constants";
 import { MagneticButton } from "@/components/animations/MagneticButton";
-import { ScrollParallax } from "@/components/animations/ScrollParallax";
-import { TextReveal } from "@/components/animations/TextReveal";
 import { Badge } from "@/components/ui/Badge";
-import { heroProduct, heroStats, colorways } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-import { useCart } from "@/hooks/useCart";
 
 export function Hero() {
-  const [selectedColorway, setSelectedColorway] = useState(colorways[0]);
-  const addItem = useCart((state) => state.addItem);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const pinRef = useRef<HTMLDivElement | null>(null);
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const headlineWrapRef = useRef<HTMLDivElement | null>(null);
+  const subtitleRef = useRef<HTMLParagraphElement | null>(null);
+  const ctaRef = useRef<HTMLDivElement | null>(null);
+  const shoeRef = useRef<HTMLDivElement | null>(null);
+  const darkLayerRef = useRef<HTMLDivElement | null>(null);
+  const lightLayerRef = useRef<HTMLDivElement | null>(null);
+  const labelsRef = useRef<HTMLDivElement | null>(null);
+  const featureTagsRef = useRef<HTMLDivElement | null>(null);
 
-  const priceLabel = useMemo(
-    () =>
-      new Intl.NumberFormat("en-US", {
-        currency: "USD",
-        maximumFractionDigits: 0,
-        style: "currency",
-      }).format(heroProduct.price),
-    [],
+  useGSAP(
+    () => {
+      if (
+        !sectionRef.current ||
+        !pinRef.current ||
+        !headlineRef.current ||
+        !headlineWrapRef.current ||
+        !subtitleRef.current ||
+        !ctaRef.current ||
+        !shoeRef.current ||
+        !darkLayerRef.current ||
+        !lightLayerRef.current ||
+        !labelsRef.current ||
+        !featureTagsRef.current
+      ) {
+        return;
+      }
+
+      const split = SplitText.create(headlineRef.current, {
+        type: "chars",
+        charsClass: "text-reveal-char",
+      });
+
+      const heroLabels = gsap.utils.toArray<HTMLElement>(
+        "[data-hero-label]",
+        labelsRef.current,
+      );
+      const featureTags = gsap.utils.toArray<HTMLElement>(
+        "[data-feature-tag]",
+        featureTagsRef.current,
+      );
+
+      gsap.set(shoeRef.current, {
+        scale: 0.72,
+        xPercent: -50,
+        yPercent: -50,
+      });
+      gsap.set(lightLayerRef.current, { autoAlpha: 0 });
+      gsap.set(featureTags, { autoAlpha: 0 });
+      gsap.set(featureTags[0], { xPercent: -20, y: 24 });
+      gsap.set(featureTags[1], { y: 34 });
+      gsap.set(featureTags[2], { xPercent: 20, y: 24 });
+
+      const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      intro
+        .from(split.chars, {
+          yPercent: 115,
+          opacity: 0,
+          stagger: 0.03,
+          duration: 1,
+          delay: 0.15,
+        })
+        .from(
+          subtitleRef.current,
+          {
+            autoAlpha: 0,
+            duration: 0.75,
+            y: 24,
+          },
+          0.45,
+        )
+        .from(
+          ctaRef.current,
+          {
+            autoAlpha: 0,
+            duration: 0.75,
+            y: 22,
+          },
+          0.58,
+        )
+        .from(
+          heroLabels,
+          {
+            autoAlpha: 0,
+            duration: 0.6,
+            stagger: 0.08,
+            y: 18,
+          },
+          0.72,
+        );
+
+      const scrollTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=220%",
+          scrub: 1.1,
+          pin: pinRef.current,
+          anticipatePin: 1,
+        },
+      });
+
+      scrollTimeline
+        .to(
+          shoeRef.current,
+          {
+            scale: 1.8,
+            yPercent: -46,
+            ease: "none",
+          },
+          0,
+        )
+        .to(
+          headlineWrapRef.current,
+          {
+            autoAlpha: 0,
+            duration: 0.28,
+            y: -42,
+          },
+          0.08,
+        )
+        .to(
+          subtitleRef.current,
+          {
+            autoAlpha: 0,
+            duration: 0.24,
+            y: -28,
+          },
+          0.1,
+        )
+        .to(
+          ctaRef.current,
+          {
+            autoAlpha: 0,
+            duration: 0.24,
+            y: -24,
+          },
+          0.12,
+        )
+        .to(
+          heroLabels,
+          {
+            autoAlpha: 0,
+            duration: 0.24,
+            stagger: 0.03,
+            y: 24,
+          },
+          0.14,
+        )
+        .to(
+          darkLayerRef.current,
+          {
+            autoAlpha: 0.16,
+            ease: "none",
+          },
+          0.2,
+        )
+        .to(
+          lightLayerRef.current,
+          {
+            autoAlpha: 1,
+            ease: "none",
+          },
+          0.2,
+        )
+        .to(
+          featureTags[0],
+          {
+            autoAlpha: 1,
+            duration: 0.35,
+            xPercent: 0,
+            y: 0,
+          },
+          0.45,
+        )
+        .to(
+          featureTags[1],
+          {
+            autoAlpha: 1,
+            duration: 0.35,
+            y: 0,
+          },
+          0.52,
+        )
+        .to(
+          featureTags[2],
+          {
+            autoAlpha: 1,
+            duration: 0.35,
+            xPercent: 0,
+            y: 0,
+          },
+          0.59,
+        );
+
+      return () => split.revert();
+    },
+    { scope: sectionRef },
   );
 
-  const handleAddToCart = () => {
-    addItem({
-      id: heroProduct.id,
-      image: heroProduct.image,
-      name: heroProduct.name,
-      price: heroProduct.price,
-      colorway: selectedColorway.name,
-    });
-  };
-
   return (
-    <section className="relative pb-24 pt-8 sm:pb-28 sm:pt-14 lg:pb-30">
-      <div className="container-shell grid gap-14 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
-        <div className="relative z-10">
-          <FadeUp className="flex flex-wrap items-center gap-4">
-            <Badge variant="accent">Phase 1 / Design System</Badge>
-            <span className="eyebrow">{heroProduct.eyebrow}</span>
-          </FadeUp>
+    <section id="home" ref={sectionRef} className="relative">
+      <div ref={pinRef} className="relative h-screen overflow-hidden bg-brand-black">
+        <div ref={darkLayerRef} className="absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,83,54,0.16),transparent_26%),radial-gradient(circle_at_78%_18%,rgba(232,255,71,0.1),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_38%),#0A0A0A]" />
+          <div className="grain-overlay absolute inset-0 opacity-[0.35]" />
+          <div className="absolute -left-32 top-20 h-[28rem] w-[28rem] rounded-full border border-brand-copper/25" />
+          <div className="absolute right-[-6rem] top-10 h-[26rem] w-[42rem] rounded-full border border-brand-copper/20" />
+          <div className="absolute bottom-[-8rem] left-[8%] h-[24rem] w-[24rem] rounded-full border border-brand-copper/15" />
+        </div>
 
-          <div className="mt-8 space-y-1">
-            <TextReveal
-              as="h1"
-              text={heroProduct.headlinePrimary}
-              className="font-display text-[clamp(5rem,13vw,10rem)] uppercase leading-[0.82] tracking-[0.04em] text-brand-ember sm:text-[clamp(6rem,15vw,12rem)]"
-            />
-            <TextReveal
-              as="h1"
-              text={heroProduct.headlineSecondary}
-              className="font-display text-[clamp(5.5rem,14vw,11rem)] uppercase leading-[0.82] tracking-[0.02em] text-brand-white"
-            />
+        <div ref={lightLayerRef} className="absolute inset-0">
+          <div className="absolute inset-0 bg-brand-white" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,83,54,0.15),transparent_24%),radial-gradient(circle_at_80%_20%,rgba(232,255,71,0.18),transparent_22%),linear-gradient(180deg,rgba(10,10,10,0.02),transparent_42%)]" />
+          <div className="grain-overlay absolute inset-0 opacity-[0.25]" />
+        </div>
+
+        <div className="container-shell relative z-10 flex h-full flex-col justify-between pb-14 pt-28">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <Badge variant="accent">SS26 / Hero Zoom</Badge>
+            <span className="eyebrow text-white/45">
+              Signature scroll sequence
+            </span>
           </div>
 
-          <FadeUp
-            delay={0.1}
-            className="mt-6 max-w-xl text-base leading-8 text-white/70 sm:text-lg"
-          >
-            {heroProduct.description}
-          </FadeUp>
-
-          <FadeUp delay={0.16} className="mt-8 flex flex-wrap gap-4">
-            <MagneticButton onClick={handleAddToCart}>
-              Add to Cart
-            </MagneticButton>
-            <MagneticButton href="#featured" variant="secondary">
-              Explore Drop
-              <ArrowRight className="h-4 w-4" />
-            </MagneticButton>
-          </FadeUp>
-
-          <FadeUp delay={0.22} className="mt-10 grid gap-4 sm:grid-cols-3">
-            {heroStats.map((item) => (
-              <div
-                key={item.label}
-                className="glass-panel rounded-[1.4rem] p-4"
+          <div className="relative z-20 max-w-5xl">
+            <div ref={headlineWrapRef}>
+              <h1
+                ref={headlineRef}
+                className="font-display text-[clamp(6rem,19vw,15rem)] uppercase leading-[0.82] tracking-[0.08em] text-brand-white"
               >
-                <p className="font-display text-4xl uppercase leading-none text-brand-white">
-                  {item.value}
-                </p>
-                <p className="mt-3 text-xs uppercase tracking-[0.26em] text-brand-muted">
-                  {item.label}
+                {heroProduct.headlinePrimary}
+              </h1>
+            </div>
+            <p
+              ref={subtitleRef}
+              className="mt-5 max-w-2xl text-base leading-8 text-white/72 sm:text-lg"
+            >
+              {heroProduct.headlineSecondary}
+            </p>
+            <div ref={ctaRef} className="mt-8 flex flex-wrap items-center gap-4">
+              <MagneticButton href="#featured">
+                Explore the Drop
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+              <span className="text-xs uppercase tracking-[0.28em] text-white/42">
+                Scroll to trigger the pin zoom.
+              </span>
+            </div>
+          </div>
+
+          <div
+            ref={labelsRef}
+            className="relative z-20 grid gap-4 sm:grid-cols-3"
+          >
+            {heroIntroLabels.map((label) => (
+              <div
+                key={label}
+                data-hero-label
+                className="glass-panel rounded-[1.6rem] border-white/12 bg-white/[0.03] px-4 py-4"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-muted">
+                  {label}
                 </p>
               </div>
             ))}
-          </FadeUp>
+          </div>
         </div>
 
-        <div className="relative">
-          <ScrollParallax offset={16}>
-            <div
-              className="relative mx-auto aspect-[1.05] max-w-[720px]"
-              data-cursor="card"
-              data-cursor-label="Inspect"
-            >
-              <div className="absolute inset-0 rounded-[2.75rem] border border-white/10 bg-white/[0.02]" />
-              <div className="absolute inset-x-10 top-12 h-px animate-pulse-line bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              <p className="pointer-events-none absolute -left-4 top-14 font-display text-[clamp(7rem,20vw,15rem)] uppercase leading-none tracking-[0.08em] text-white/[0.05]">
-                Apex
-              </p>
+        <div
+          ref={shoeRef}
+          className="pointer-events-none absolute left-1/2 top-1/2 z-20 h-[50vh] w-[82vw] max-w-[980px]"
+        >
+          <Image
+            src={heroProduct.image}
+            alt={heroProduct.name}
+            fill
+            priority
+            className="object-contain drop-shadow-[0_48px_110px_rgba(0,0,0,0.6)]"
+          />
+        </div>
 
-              <motion.div
-                className="absolute inset-[16%] rounded-full blur-3xl"
-                style={{
-                  background: `radial-gradient(circle, ${selectedColorway.glow} 0%, transparent 72%)`,
-                }}
-                animate={{ opacity: [0.72, 1, 0.72], scale: [0.96, 1.04, 0.96] }}
-                transition={{ duration: 6.2, ease: "easeInOut", repeat: Infinity }}
-              />
-
-              <motion.div
-                className="absolute inset-x-0 top-[11%] bottom-[9%]"
-                animate={{ rotate: [-14, -11, -14], y: [0, -14, 0] }}
-                transition={{ duration: 6.5, ease: "easeInOut", repeat: Infinity }}
+        <div
+          id="zoom"
+          ref={featureTagsRef}
+          className="pointer-events-none absolute inset-x-0 bottom-14 z-30"
+        >
+          <div className="container-shell grid gap-4 lg:grid-cols-3">
+            {zoomFeatureTags.map((tag, index) => (
+              <div
+                key={tag.title}
+                data-feature-tag
+                className={`rounded-[1.8rem] border border-black/10 bg-black/5 p-5 text-brand-black shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm ${
+                  index === 1 ? "lg:mt-10" : ""
+                }`}
               >
-                <Image
-                  src={heroProduct.image}
-                  alt={heroProduct.name}
-                  fill
-                  priority
-                  className="object-contain drop-shadow-[0_42px_90px_rgba(0,0,0,0.58)]"
-                />
-              </motion.div>
-
-              <div className="glass-panel absolute right-5 top-5 max-w-[220px] p-4 text-right">
-                <p className="eyebrow">Prototype code</p>
-                <p className="mt-2 font-display text-4xl uppercase leading-none text-brand-white">
-                  {heroProduct.code}
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-black/45">
+                  {tag.eyebrow}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-white/65">
-                  Tuned for aggressive first steps, clean transitions, and
-                  locked-in heel support.
+                <h3 className="mt-3 font-display text-4xl uppercase leading-none">
+                  {tag.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-black/65">
+                  {tag.summary}
                 </p>
               </div>
-
-              <div className="absolute bottom-6 left-5 right-5 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-                <div className="glass-panel rounded-[1.7rem] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-muted">
-                    Choose color
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-3">
-                    {colorways.map((colorway) => (
-                      <button
-                        key={colorway.name}
-                        type="button"
-                        data-cursor="button"
-                        aria-label={colorway.name}
-                        onClick={() => setSelectedColorway(colorway)}
-                        className={cn(
-                          "group flex items-center gap-3 rounded-pill border px-3 py-2 transition-all duration-300",
-                          selectedColorway.name === colorway.name
-                            ? "border-brand-accent/40 bg-white/[0.08]"
-                            : "border-white/10 bg-black/35",
-                        )}
-                      >
-                        <span
-                          className="h-5 w-5 rounded-full border border-white/20"
-                          style={{
-                            background: `linear-gradient(135deg, ${colorway.accent}, ${colorway.secondary})`,
-                          }}
-                        />
-                        <span className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-white/70 transition group-hover:text-white">
-                          {colorway.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="glass-panel rounded-[1.7rem] p-4 text-right">
-                  <Badge variant="dark">Exclusive Concept</Badge>
-                  <p className="mt-4 font-display text-5xl uppercase leading-none text-brand-white">
-                    {priceLabel}
-                  </p>
-                  <p className="mt-2 text-sm uppercase tracking-[0.28em] text-brand-muted">
-                    {heroProduct.name}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </ScrollParallax>
+            ))}
+          </div>
         </div>
       </div>
     </section>

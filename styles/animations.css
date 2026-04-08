@@ -1,4 +1,37 @@
 @layer utilities {
+  @keyframes marquee-forward {
+    from {
+      transform: translate3d(-50%, 0, 0);
+    }
+
+    to {
+      transform: translate3d(0%, 0, 0);
+    }
+  }
+
+  @keyframes grain-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    20% {
+      transform: translate3d(-3%, 2%, 0);
+    }
+
+    40% {
+      transform: translate3d(2%, -2%, 0);
+    }
+
+    60% {
+      transform: translate3d(3%, 1%, 0);
+    }
+
+    80% {
+      transform: translate3d(-2%, -1%, 0);
+    }
+  }
+
   .text-reveal-line {
     display: block;
     overflow: hidden;
@@ -13,6 +46,18 @@
   .parallax-layer {
     will-change: transform;
     transform: translateZ(0);
+  }
+
+  .ticker-track {
+    animation: marquee-forward 24s linear infinite;
+    will-change: transform;
+  }
+
+  .grain-overlay {
+    background-image: url("/images/grain.svg");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    animation: grain-drift 8s steps(10) infinite;
   }
 
   .clip-fade {

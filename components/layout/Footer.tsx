@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import { NewsletterSignup } from "@/components/layout/NewsletterSignup";
 import { footerColumns, socialLinks } from "@/lib/constants";
 
 export function Footer() {
@@ -42,18 +41,7 @@ export function Footer() {
               >
                 Email address
               </label>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <input
-                  id="newsletter-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  className="h-12 w-full rounded-pill border border-white/12 bg-white/[0.04] px-5 text-sm text-brand-white outline-none transition placeholder:text-brand-muted focus:border-brand-accent/45"
-                />
-                <Button className="shrink-0">
-                  Join Now
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
+              <NewsletterSignup />
             </div>
 
             <div className="grid gap-6 sm:grid-cols-3">

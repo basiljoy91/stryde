@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+.stryde-data/
 
 # debug
 npm-debug.log*
