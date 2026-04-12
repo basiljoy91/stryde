@@ -60,10 +60,10 @@ export function AboutShowcase() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_32%)]" />
               <ScrollParallax offset={8} className="absolute inset-0">
                 <Image
-                  src="/images/hero-shoe.svg"
+                  src="/images/products/hero-main.png"
                   alt="Stryde hero object"
                   fill
-                  className="object-contain p-8 rotate-[-12deg] scale-[1.08] hue-rotate-[48deg] saturate-[1.1]"
+                  className="object-contain p-8 drop-shadow-[0_28px_90px_rgba(0,0,0,0.3)]"
                 />
               </ScrollParallax>
             </div>

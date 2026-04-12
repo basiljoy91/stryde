@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 
 type Category = "All" | "Basketball" | "Running" | "Lifestyle";
 type Size = "All" | "7" | "8" | "9" | "10" | "11" | "12";
-type Color = "All" | "Volt" | "Ember" | "Ivory" | "Black" | "Stone" | "Slate" | "Silver";
+type Color = string;
 type PriceRange = "All" | "Under 150" | "150-175" | "175+";
 type ViewMode = "grid" | "masonry";
 
@@ -30,17 +30,11 @@ const categoryOptions: Category[] = ["All", "Basketball", "Running", "Lifestyle"
 const sizeOptions: Size[] = ["All", "7", "8", "9", "10", "11", "12"];
 const colorOptions: Color[] = [
   "All",
-  "Volt",
-  "Ember",
-  "Ivory",
-  "Black",
-  "Stone",
-  "Slate",
-  "Silver",
+  ...Array.from(new Set(collectionProducts.flatMap((product) => product.colors))),
 ];
 const priceOptions: PriceRange[] = ["All", "Under 150", "150-175", "175+"];
 
-const colorMap: Record<Exclude<Color, "All">, string> = {
+const colorMap: Record<string, string> = {
   Volt: "#E8FF47",
   Ember: "#FF5336",
   Ivory: "#F5F5F0",
@@ -48,6 +42,7 @@ const colorMap: Record<Exclude<Color, "All">, string> = {
   Stone: "#C3B9A5",
   Slate: "#5C6370",
   Silver: "#C8CED7",
+  Charcoal: "#303030",
 };
 
 export function CollectionShowcase() {
@@ -66,7 +61,8 @@ export function CollectionShowcase() {
       const matchesSize =
         size === "All" || product.size.includes(Number(size));
       const matchesColor =
-        color === "All" || product.colors.includes(color);
+        color === "All" ||
+        product.colors.includes(color as (typeof product.colors)[number]);
       const matchesPrice =
         priceRange === "All" ||
         (priceRange === "Under 150" && product.price < 150) ||
@@ -419,7 +415,7 @@ function ProductCard({
                 key={swatch}
                 className="h-4 w-4 rounded-full border border-white/15"
                 style={{
-                  backgroundColor: colorMap[swatch as Exclude<Color, "All">],
+                  backgroundColor: colorMap[swatch] ?? "#D9D9D9",
                 }}
               />
             ))}

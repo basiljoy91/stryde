@@ -133,7 +133,7 @@ export function CartDrawer() {
                             src={item.image}
                             alt={item.name}
                             fill
-                            className="object-contain p-3 rotate-[-12deg] scale-[1.06]"
+                            className="object-contain p-3"
                           />
                         </div>
                         <div className="min-w-0 flex-1">

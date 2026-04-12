@@ -72,6 +72,9 @@ export function ProductDetailShowcase({
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(product.price);
+  const hasMultipleGalleryImages = product.gallery.length > 1;
+  const colorLabel =
+    product.variants.length > 1 ? "Color" : "Studio color";
 
   const handleAddToCart = () => {
     if (!selectedColor) {
@@ -147,34 +150,42 @@ export function ProductDetailShowcase({
               </AnimatePresence>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              {product.gallery.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  data-cursor="button"
-                  onClick={() => setActiveImageId(item.id)}
-                  className={cn(
-                    "relative overflow-hidden rounded-[1.6rem] border p-3 text-left transition",
-                    item.id === activeGalleryItem.id
-                      ? "border-brand-accent/40 bg-white/[0.08]"
-                      : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]",
-                  )}
-                >
-                  <div className="relative mb-3 h-28 overflow-hidden rounded-[1.1rem] bg-black/30">
-                    <Image
-                      src={item.image}
-                      alt={item.label}
-                      fill
-                      className={cn("object-contain p-3", item.imageClass)}
-                    />
-                  </div>
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-white/68">
-                    {item.label}
-                  </p>
-                </button>
-              ))}
-            </div>
+            {hasMultipleGalleryImages ? (
+              <div className="grid gap-3 sm:grid-cols-3">
+                {product.gallery.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    data-cursor="button"
+                    onClick={() => setActiveImageId(item.id)}
+                    className={cn(
+                      "relative overflow-hidden rounded-[1.6rem] border p-3 text-left transition",
+                      item.id === activeGalleryItem.id
+                        ? "border-brand-accent/40 bg-white/[0.08]"
+                        : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]",
+                    )}
+                  >
+                    <div className="relative mb-3 h-28 overflow-hidden rounded-[1.1rem] bg-black/30">
+                      <Image
+                        src={item.image}
+                        alt={item.label}
+                        fill
+                        className={cn("object-contain p-3", item.imageClass)}
+                      />
+                    </div>
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-white/68">
+                      {item.label}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[1.6rem] border border-white/10 bg-white/[0.03] px-5 py-4">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-white/68">
+                  Single studio cutout supplied for this product.
+                </p>
+              </div>
+            )}
           </div>
 
           <div>
@@ -199,7 +210,7 @@ export function ProductDetailShowcase({
 
                 <div className="mt-8">
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/45">
-                    Color
+                    {colorLabel}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-3">
                     {product.variants.map((variant) => (
