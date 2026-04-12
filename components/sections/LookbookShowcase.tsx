@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 export function LookbookShowcase() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const activeEntry =
     activeIndex !== null ? lookbookEntries[activeIndex] : null;
@@ -40,6 +41,34 @@ export function LookbookShowcase() {
       current === null ? 0 : (current + 1) % lookbookEntries.length,
     );
   };
+
+  useEffect(() => {
+    if (activeIndex === null) {
+      return undefined;
+    }
+
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveIndex(null);
+      }
+
+      if (event.key === "ArrowLeft") {
+        showPrev();
+      }
+
+      if (event.key === "ArrowRight") {
+        showNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeIndex]);
 
   return (
     <div className="relative bg-brand-black pb-24 pt-28 sm:pb-28 lg:pb-30">
@@ -67,8 +96,8 @@ export function LookbookShowcase() {
             transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="mt-5 max-w-2xl text-base leading-8 text-white/65"
           >
-            An editorial cut of the collection with masonry framing, parallax
-            motion, and a full-screen lightbox for the hero moments.
+            Campaign frames, studio stills, and close-cut product moments that
+            show how each pair lives beyond the shelf.
           </motion.p>
         </header>
 
@@ -136,6 +165,7 @@ export function LookbookShowcase() {
                 {lightboxLabel}
               </span>
               <button
+                ref={closeButtonRef}
                 type="button"
                 onClick={() => setActiveIndex(null)}
                 className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white"

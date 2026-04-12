@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef, type MutableRefObject } from "react";
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
@@ -18,6 +18,7 @@ type ProductViewer3DProps = {
   className?: string;
   image: string;
   interactive?: boolean;
+  rotationProgressRef?: MutableRefObject<number>;
   tone?: "dark" | "light";
 };
 
@@ -25,6 +26,7 @@ export function ProductViewer3D({
   className,
   image,
   interactive = false,
+  rotationProgressRef,
   tone = "dark",
 }: ProductViewer3DProps) {
   return (
@@ -49,7 +51,12 @@ export function ProductViewer3D({
           color={tone === "light" ? "#ffd6ae" : "#e8ff47"}
         />
         <Suspense fallback={null}>
-          <ViewerScene image={image} interactive={interactive} tone={tone} />
+          <ViewerScene
+            image={image}
+            interactive={interactive}
+            rotationProgressRef={rotationProgressRef}
+            tone={tone}
+          />
           <Environment preset={tone === "light" ? "studio" : "city"} />
           <ContactShadows
             position={[0, -2.45, 0]}
@@ -67,10 +74,12 @@ export function ProductViewer3D({
 function ViewerScene({
   image,
   interactive,
+  rotationProgressRef,
   tone,
 }: {
   image: string;
   interactive: boolean;
+  rotationProgressRef?: MutableRefObject<number>;
   tone: "dark" | "light";
 }) {
   const texture = useTexture(image);
@@ -100,20 +109,35 @@ function ViewerScene({
       return;
     }
 
+    const scrollRotation =
+      rotationProgressRef?.current !== undefined
+        ? THREE.MathUtils.mapLinear(
+            rotationProgressRef.current,
+            0,
+            1,
+            -0.7,
+            Math.PI * 1.3,
+          )
+        : null;
+
     if (!interactive) {
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
-        Math.sin(state.clock.elapsedTime * 0.45) * 0.18,
+        scrollRotation ?? Math.sin(state.clock.elapsedTime * 0.45) * 0.18,
         0.05,
       );
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
-        Math.cos(state.clock.elapsedTime * 0.32) * 0.04,
+        (scrollRotation !== null
+          ? Math.sin(rotationProgressRef!.current * Math.PI) * 0.14
+          : Math.cos(state.clock.elapsedTime * 0.32) * 0.04),
         0.05,
       );
       groupRef.current.position.y = THREE.MathUtils.lerp(
         groupRef.current.position.y,
-        Math.sin(state.clock.elapsedTime * 0.8) * 0.12,
+        scrollRotation !== null
+          ? Math.sin(rotationProgressRef!.current * Math.PI) * 0.2
+          : Math.sin(state.clock.elapsedTime * 0.8) * 0.12,
         0.06,
       );
     }

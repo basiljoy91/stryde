@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import {
   ChevronRight,
   Grid2x2,
@@ -177,9 +177,8 @@ export function CollectionShowcase({
             transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="mt-5 max-w-2xl text-base leading-8 text-white/65"
           >
-            Browse every silhouette by category, size, color, and price without
-            leaving the flow. Each card is framed like a studio asset so the
-            collection reads as one world instead of a pile of mismatched uploads.
+            Explore the full Stryde lineup, from fast-cut runners to statement
+            court silhouettes and everyday pairs built for repeat wear.
           </motion.p>
         </header>
 
@@ -284,6 +283,7 @@ export function CollectionShowcase({
             {visibleProducts.map((product, index) => (
               <ProductCard
                 key={product.id}
+                index={index}
                 product={product}
                 viewMode={viewMode}
                 tall={viewMode === "masonry" && index % 3 === 1}
@@ -384,11 +384,13 @@ function FilterGroup<T extends string>({
 type Product = (typeof collectionProducts)[number];
 
 function ProductCard({
+  index,
   onQuickAdd,
   product,
   tall,
   viewMode,
 }: {
+  index: number;
   onQuickAdd: () => void;
   product: Product;
   tall: boolean;
@@ -399,14 +401,54 @@ function ProductCard({
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(product.price);
+  const rotateXBase = useMotionValue(0);
+  const rotateYBase = useMotionValue(0);
+  const rotateX = useSpring(rotateXBase, {
+    stiffness: 180,
+    damping: 18,
+    mass: 0.45,
+  });
+  const rotateY = useSpring(rotateYBase, {
+    stiffness: 180,
+    damping: 18,
+    mass: 0.45,
+  });
+
+  const handlePointerMove = (event: {
+    clientX: number;
+    clientY: number;
+    currentTarget: HTMLElement;
+  }) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const percentX = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const percentY = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+    rotateXBase.set(percentY * -8);
+    rotateYBase.set(percentX * 10);
+  };
+
+  const resetTilt = () => {
+    rotateXBase.set(0);
+    rotateYBase.set(0);
+  };
 
   return (
     <motion.article
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 1200,
+        transformStyle: "preserve-3d",
+      }}
       layout
       initial={{ opacity: 0, y: 28, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 18, scale: 0.96 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.45,
+        delay: Math.min(index * 0.08, 0.4),
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className={cn(
         "group relative overflow-hidden rounded-[2.3rem] border border-white/10 bg-brand-mid p-5",
         tall && "sm:row-span-2 min-h-[38rem]",
@@ -415,6 +457,8 @@ function ProductCard({
       )}
       data-cursor="card"
       data-cursor-label="Open"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetTilt}
     >
       <Link
         href={`/collection/${product.id}`}
@@ -440,7 +484,16 @@ function ProductCard({
           <div className="absolute left-4 top-4 z-10 rounded-pill border border-black/8 bg-black/5 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-black/45">
             Studio frame
           </div>
-          <div className="absolute inset-0 overflow-hidden rounded-[1.8rem]">
+          <motion.div
+            initial={{ clipPath: "inset(0 0 100% 0 round 1.8rem)" }}
+            animate={{ clipPath: "inset(0 0 0% 0 round 1.8rem)" }}
+            transition={{
+              duration: 0.7,
+              delay: Math.min(index * 0.08, 0.36) + 0.05,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute inset-0 overflow-hidden rounded-[1.8rem]"
+          >
             <Image
               src={product.image}
               alt={product.name}
@@ -448,7 +501,7 @@ function ProductCard({
               sizes="(min-width: 1280px) 28vw, (min-width: 640px) 44vw, 100vw"
               className={`object-cover p-3 transition-transform duration-700 ease-out group-hover:scale-[1.05] ${product.imageClass}`}
             />
-          </div>
+          </motion.div>
         </div>
 
         <div className="mt-auto">

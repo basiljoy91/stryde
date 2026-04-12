@@ -1,6 +1,6 @@
 export const siteConfig = {
   description:
-    "Stryde is a motion-led footwear concept built with editorial layout, smooth scroll, and reusable interaction primitives.",
+    "Stryde crafts performance-minded footwear with sharp silhouettes, limited drops, and editorial energy built around real product stories.",
   name: "Stryde",
   siteUrl: resolveSiteUrl(),
 };

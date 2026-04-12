@@ -7,14 +7,14 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Lookbook",
   description:
-    "Browse the Stryde editorial lookbook with masonry framing, parallax imagery, hover captions, and full-screen lightbox navigation.",
+    "Step into the Stryde lookbook for campaign frames, studio product moments, and the visual world around each drop.",
   alternates: {
     canonical: absoluteUrl("/lookbook"),
   },
   openGraph: {
     title: "Lookbook | Stryde",
     description:
-      "Browse the Stryde editorial lookbook with masonry framing, parallax imagery, hover captions, and full-screen lightbox navigation.",
+      "Step into the Stryde lookbook for campaign frames, studio product moments, and the visual world around each drop.",
     url: absoluteUrl("/lookbook"),
   },
 };

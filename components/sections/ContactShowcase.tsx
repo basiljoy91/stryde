@@ -102,7 +102,7 @@ export function ContactShowcase() {
 
         <div className="grid gap-8 xl:grid-cols-[0.95fr_1.05fr]">
           <div className="space-y-6">
-            <p className="eyebrow">Contact / Final Polish</p>
+            <p className="eyebrow">Collaborate / Get In Touch</p>
             <h1 className="font-display text-[clamp(4.5rem,11vw,8rem)] uppercase leading-[0.84] tracking-[0.08em] text-brand-white">
               Let&apos;s Build The Next Drop.
             </h1>

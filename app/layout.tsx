@@ -7,6 +7,9 @@ import { Footer } from "@/components/layout/Footer";
 import { LenisProvider } from "@/components/layout/LenisProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
+import { Preloader } from "@/components/layout/Preloader";
+import { BackToTopButton } from "@/components/layout/BackToTopButton";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 
 import "./globals.css";
@@ -56,9 +59,12 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-background font-sans text-foreground">
         <LenisProvider>
+          <Preloader />
+          <ScrollProgress />
           <CustomCursor />
           <Navbar />
           <CartDrawer />
+          <BackToTopButton />
           <PageTransition>{children}</PageTransition>
           <Footer />
         </LenisProvider>

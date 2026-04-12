@@ -7,9 +7,9 @@ export const navLinks = [
 ];
 
 export const socialLinks = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "Behance", href: "https://behance.net" },
-  { label: "Dribbble", href: "https://dribbble.com" },
+  { label: "Instagram", href: "https://instagram.com/stryde.lab" },
+  { label: "Behance", href: "https://www.behance.net/strydestudio" },
+  { label: "Dribbble", href: "https://dribbble.com/stryde-lab" },
 ];
 
 const studioHeroImage = "/images/products/hero-main.png";
@@ -83,9 +83,9 @@ export const heroProduct = {
 };
 
 export const heroIntroLabels = [
-  "Featherweight upper",
-  "Locked-in support",
-  "Launch edition finish",
+  "Free shipping",
+  "Limited editions",
+  "Engineered performance",
 ];
 
 export const zoomFeatureTags = [
@@ -136,14 +136,15 @@ export const colorways = [
 ];
 
 export const heroStats = [
-  { value: "03", label: "launch colorways" },
-  { value: "26%", label: "lighter tooling concept" },
-  { value: "360", label: "degree traction story" },
+  { value: 3, suffix: "", label: "launch colorways" },
+  { value: 26, suffix: "%", label: "lighter tooling concept" },
+  { value: 360, suffix: "deg", label: "traction story" },
 ];
 
 export const featuredDrops = [
   {
     id: "01",
+    href: "/collection/flux-court-mid",
     name: "Flux Court Mid",
     price: "$164",
     summary: "Reactive knit upper with pressure-mapped traction and a low-profile heel clip.",
@@ -153,6 +154,7 @@ export const featuredDrops = [
   },
   {
     id: "02",
+    href: "/collection/torque-glide",
     name: "Torque Glide",
     price: "$172",
     summary: "A faster-cut silhouette built for guards who want snap, flex, and lightweight support.",
@@ -162,6 +164,7 @@ export const featuredDrops = [
   },
   {
     id: "03",
+    href: "/collection/echo-shift-low",
     name: "Echo Shift Low",
     price: "$158",
     summary: "Street-to-court hybrid with tonal mesh, sculpted foam, and reflective detailing.",

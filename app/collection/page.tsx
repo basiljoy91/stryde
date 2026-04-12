@@ -7,14 +7,14 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Collection",
   description:
-    "Filter the Stryde collection by category, size, color, and price across animated grid and masonry views.",
+    "Shop the Stryde collection across running, basketball, and lifestyle silhouettes built for speed, style, and everyday rotation.",
   alternates: {
     canonical: absoluteUrl("/collection"),
   },
   openGraph: {
     title: "Collection | Stryde",
     description:
-      "Filter the Stryde collection by category, size, color, and price across animated grid and masonry views.",
+      "Shop the Stryde collection across running, basketball, and lifestyle silhouettes built for speed, style, and everyday rotation.",
     url: absoluteUrl("/collection"),
   },
 };

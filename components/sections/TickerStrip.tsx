@@ -4,7 +4,7 @@ const loopItems = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItem
 
 export function TickerStrip() {
   return (
-    <section className="overflow-hidden border-y border-black/10 bg-brand-white py-5 text-brand-black">
+    <section className="ticker-group overflow-hidden border-y border-black/10 bg-brand-white py-5 text-brand-black">
       <div className="ticker-track flex min-w-[200%] items-center gap-7 whitespace-nowrap pr-7">
         {loopItems.map((item, index) => (
           <span

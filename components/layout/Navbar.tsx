@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, type PanInfo } from "framer-motion";
 import { Menu, Search, ShoppingBag, Sparkles, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -123,9 +123,15 @@ export function Navbar() {
               className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/80 transition hover:border-brand-accent/35 hover:text-brand-white"
             >
               <ShoppingBag className="h-[18px] w-[18px]" />
-              <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-[0.58rem] font-bold text-brand-black">
+              <motion.span
+                key={itemCount}
+                initial={{ scale: 0.7, y: -4 }}
+                animate={{ scale: [0.7, 1.22, 1], y: [-4, -8, 0] }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-[0.58rem] font-bold text-brand-black"
+              >
                 {itemCount}
-              </span>
+              </motion.span>
             </button>
             <Link
               href="/lookbook"
@@ -162,7 +168,18 @@ export function Navbar() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[70] bg-brand-black/96 backdrop-blur-2xl lg:hidden"
           >
-            <div className="container-shell flex min-h-screen flex-col px-6 pb-10 pt-28">
+            <motion.div
+              drag="x"
+              dragDirectionLock
+              dragElastic={0.08}
+              dragConstraints={{ left: 0, right: 0 }}
+              onDragEnd={(_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+                if (info.offset.x > 80 || info.velocity.x > 600) {
+                  setIsMenuOpen(false);
+                }
+              }}
+              className="container-shell flex min-h-screen flex-col px-6 pb-10 pt-28"
+            >
               <nav className="flex flex-1 flex-col justify-center gap-4">
                 {navLinks.map((link, index) => {
                   const isActive = isNavLinkActive(link.href);
@@ -211,7 +228,7 @@ export function Navbar() {
                   </span>
                 </button>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         ) : null}
       </AnimatePresence>

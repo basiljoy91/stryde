@@ -59,6 +59,8 @@ export function ProductDetailShowcase({
   );
   const [openAccordion, setOpenAccordion] =
     useState<AccordionKey | null>("description");
+  const [zoomPoint, setZoomPoint] = useState({ x: 50, y: 50 });
+  const [isZoomActive, setIsZoomActive] = useState(false);
 
   const addItem = useCart((state) => state.addItem);
 
@@ -134,6 +136,18 @@ export function ProductDetailShowcase({
             <div
               className="relative min-h-[34rem] overflow-hidden rounded-[2.6rem] border border-white/10 bg-brand-mid p-6 sm:min-h-[42rem]"
               style={{ touchAction: "pan-y pinch-zoom" }}
+              onMouseEnter={() => setIsZoomActive(true)}
+              onMouseLeave={() => setIsZoomActive(false)}
+              onMouseMove={(event) => {
+                const bounds = event.currentTarget.getBoundingClientRect();
+                const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+                const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+
+                setZoomPoint({
+                  x: Math.max(0, Math.min(100, x)),
+                  y: Math.max(0, Math.min(100, y)),
+                });
+              }}
             >
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${product.accentClass} opacity-75`}
@@ -156,6 +170,26 @@ export function ProductDetailShowcase({
                   />
                 </motion.div>
               </AnimatePresence>
+              <AnimatePresence>
+                {isZoomActive ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    className="pointer-events-none absolute bottom-5 right-5 hidden h-40 w-40 overflow-hidden rounded-full border border-white/15 shadow-[0_18px_48px_rgba(0,0,0,0.35)] lg:block"
+                    style={{
+                      backgroundImage: `url(${activeGalleryItem.image})`,
+                      backgroundPosition: `${zoomPoint.x}% ${zoomPoint.y}%`,
+                      backgroundSize: "220%",
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_34%,rgba(10,10,10,0.15)_70%)]" />
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+              <div className="absolute left-5 top-5 rounded-pill border border-white/10 bg-brand-black/40 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-white/70 backdrop-blur-sm">
+                Hover to inspect detail
+              </div>
             </div>
 
             {hasMultipleGalleryImages ? (

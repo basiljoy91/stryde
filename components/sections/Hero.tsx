@@ -40,6 +40,10 @@ export function Hero() {
   const labelsRef = useRef<HTMLDivElement | null>(null);
   const statsRef = useRef<HTMLDivElement | null>(null);
   const featureTagsRef = useRef<HTMLDivElement | null>(null);
+  const particleLayerRef = useRef<HTMLDivElement | null>(null);
+  const glowLayerRef = useRef<HTMLDivElement | null>(null);
+  const meshLayerRef = useRef<HTMLDivElement | null>(null);
+  const rotationProgressRef = useRef(0);
 
   useGSAP(
     () => {
@@ -55,7 +59,10 @@ export function Hero() {
         !lightLayerRef.current ||
         !labelsRef.current ||
         !statsRef.current ||
-        !featureTagsRef.current
+        !featureTagsRef.current ||
+        !particleLayerRef.current ||
+        !glowLayerRef.current ||
+        !meshLayerRef.current
       ) {
         return;
       }
@@ -77,6 +84,15 @@ export function Hero() {
         "[data-hero-stat]",
         statsRef.current,
       );
+      const statValues = gsap.utils.toArray<HTMLElement>(
+        "[data-hero-stat-value]",
+        statsRef.current,
+      );
+      const particles = gsap.utils.toArray<HTMLElement>(
+        "[data-hero-particle]",
+        particleLayerRef.current,
+      );
+      const statCounters = heroStats.map(() => ({ value: 0 }));
 
       gsap.set(shoeRef.current, {
         scale: 0.72,
@@ -86,6 +102,7 @@ export function Hero() {
       gsap.set(lightLayerRef.current, { autoAlpha: 0 });
       gsap.set(featureTags, { autoAlpha: 0 });
       gsap.set(statCards, { autoAlpha: 0, y: 28 });
+      gsap.set(particles, { autoAlpha: 0.18, scale: 0.8 });
       gsap.set(featureTags[0], { xPercent: -20, y: 24 });
       gsap.set(featureTags[1], { y: 34 });
       gsap.set(featureTags[2], { xPercent: 20, y: 24 });
@@ -142,6 +159,14 @@ export function Hero() {
 
       scrollTimeline
         .to(
+          rotationProgressRef,
+          {
+            current: 1,
+            ease: "none",
+          },
+          0,
+        )
+        .to(
           shoeRef.current,
           {
             scale: 1.34,
@@ -158,6 +183,34 @@ export function Hero() {
             ease: "none",
           },
           0.42,
+        )
+        .to(
+          glowLayerRef.current,
+          {
+            yPercent: -18,
+            scale: 1.08,
+            ease: "none",
+          },
+          0,
+        )
+        .to(
+          meshLayerRef.current,
+          {
+            yPercent: -12,
+            scale: 1.04,
+            ease: "none",
+          },
+          0.05,
+        )
+        .to(
+          particles,
+          {
+            yPercent: -34,
+            xPercent: (index) => (index % 2 === 0 ? -20 : 20),
+            stagger: 0.02,
+            ease: "none",
+          },
+          0.06,
         )
         .to(
           headlineWrapRef.current,
@@ -223,6 +276,29 @@ export function Hero() {
           0.38,
         )
         .to(
+          statCounters,
+          {
+            value: (_target: unknown, index: number) => heroStats[index]?.value ?? 0,
+            duration: 0.45,
+            stagger: 0.08,
+            ease: "power2.out",
+            onUpdate: () => {
+              statValues.forEach((valueElement, index) => {
+                const stat = heroStats[index];
+
+                if (!stat) {
+                  return;
+                }
+
+                valueElement.textContent = `${Math.round(
+                  statCounters[index].value,
+                )}${stat.suffix}`;
+              });
+            },
+          },
+          0.4,
+        )
+        .to(
           featureTags[0],
           {
             autoAlpha: 1,
@@ -266,6 +342,22 @@ export function Hero() {
           <div className="absolute -left-32 top-20 h-[28rem] w-[28rem] rounded-full border border-brand-copper/25" />
           <div className="absolute right-[-6rem] top-10 h-[26rem] w-[42rem] rounded-full border border-brand-copper/20" />
           <div className="absolute bottom-[-8rem] left-[8%] h-[24rem] w-[24rem] rounded-full border border-brand-copper/15" />
+        </div>
+        <div ref={meshLayerRef} className="absolute inset-0 opacity-90">
+          <div className="hero-mesh absolute inset-[-12%]" />
+        </div>
+        <div ref={glowLayerRef} className="absolute inset-0">
+          <div className="absolute left-[8%] top-[18%] h-48 w-48 rounded-full bg-brand-accent/12 blur-[90px]" />
+          <div className="absolute right-[14%] top-[14%] h-56 w-56 rounded-full bg-brand-ember/14 blur-[120px]" />
+          <div className="absolute bottom-[10%] left-[22%] h-44 w-44 rounded-full bg-white/8 blur-[110px]" />
+        </div>
+        <div ref={particleLayerRef} className="absolute inset-0">
+          <div data-hero-particle className="hero-particle absolute left-[12%] top-[18%] h-3 w-3 rounded-full bg-brand-accent" />
+          <div data-hero-particle className="hero-particle absolute left-[26%] top-[30%] h-2 w-2 rounded-full bg-white/70" />
+          <div data-hero-particle className="hero-particle absolute right-[18%] top-[20%] h-4 w-4 rounded-full bg-brand-ember/80" />
+          <div data-hero-particle className="hero-particle absolute right-[24%] top-[38%] h-2.5 w-2.5 rounded-full bg-white/65" />
+          <div data-hero-particle className="hero-particle absolute left-[16%] bottom-[24%] h-2.5 w-2.5 rounded-full bg-brand-accent/75" />
+          <div data-hero-particle className="hero-particle absolute right-[12%] bottom-[18%] h-3 w-3 rounded-full bg-brand-ember/75" />
         </div>
 
         <div ref={lightLayerRef} className="absolute inset-0">
@@ -330,7 +422,11 @@ export function Hero() {
           ref={shoeRef}
           className="pointer-events-none absolute left-1/2 top-1/2 z-20 h-[50vh] w-[82vw] max-w-[980px]"
         >
-          <ProductViewer3D image={heroProduct.image} tone="dark" />
+          <ProductViewer3D
+            image={heroProduct.image}
+            rotationProgressRef={rotationProgressRef}
+            tone="dark"
+          />
         </div>
 
         <div
@@ -345,8 +441,11 @@ export function Hero() {
                   data-hero-stat
                   className="rounded-[1.5rem] border border-black/10 bg-white/68 px-3 py-4 text-brand-black shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm sm:px-5"
                 >
-                  <p className="font-display text-[clamp(2rem,4vw,3.25rem)] uppercase leading-none">
-                    {stat.value}
+                  <p
+                    data-hero-stat-value
+                    className="font-display text-[clamp(2rem,4vw,3.25rem)] uppercase leading-none"
+                  >
+                    0{stat.suffix}
                   </p>
                   <p className="mt-2 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-black/46 sm:text-[0.68rem]">
                     {stat.label}

@@ -32,6 +32,32 @@
     }
   }
 
+  @keyframes mesh-breathe {
+    0%,
+    100% {
+      transform: scale(1) translate3d(0, 0, 0);
+      filter: hue-rotate(0deg);
+    }
+
+    50% {
+      transform: scale(1.05) translate3d(1.5%, -1.5%, 0);
+      filter: hue-rotate(8deg);
+    }
+  }
+
+  @keyframes particle-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.4;
+    }
+
+    50% {
+      transform: translate3d(0, -16px, 0) scale(1.08);
+      opacity: 0.88;
+    }
+  }
+
   .text-reveal-word {
     display: inline-block;
     overflow: hidden;
@@ -54,6 +80,10 @@
     will-change: transform;
   }
 
+  .ticker-group:hover .ticker-track {
+    animation-play-state: paused;
+  }
+
   .grain-overlay {
     background-image: url("/images/grain.svg");
     background-repeat: repeat;
@@ -63,5 +93,21 @@
 
   .clip-fade {
     clip-path: inset(0 0 0 0 round 2rem);
+  }
+
+  .hero-mesh {
+    background-image:
+      radial-gradient(circle at 18% 24%, rgba(232, 255, 71, 0.14), transparent 24%),
+      radial-gradient(circle at 78% 16%, rgba(255, 83, 54, 0.18), transparent 24%),
+      radial-gradient(circle at 52% 70%, rgba(255, 255, 255, 0.06), transparent 18%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 42%);
+    animation: mesh-breathe 11s ease-in-out infinite;
+    will-change: transform, filter;
+  }
+
+  .hero-particle {
+    animation: particle-drift 4.5s ease-in-out infinite;
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.15);
+    will-change: transform, opacity;
   }
 }

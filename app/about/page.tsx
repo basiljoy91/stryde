@@ -7,14 +7,14 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Read the Stryde story through a full-screen brand hero, milestone timeline, team section, and values grid.",
+    "Meet the Stryde team, discover the brand story, and explore the values shaping each release and every silhouette.",
   alternates: {
     canonical: absoluteUrl("/about"),
   },
   openGraph: {
     title: "About | Stryde",
     description:
-      "Read the Stryde story through a full-screen brand hero, milestone timeline, team section, and values grid.",
+      "Meet the Stryde team, discover the brand story, and explore the values shaping each release and every silhouette.",
     url: absoluteUrl("/about"),
   },
 };

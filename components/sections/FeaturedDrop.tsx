@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 import { useGSAP } from "@/hooks/useGSAP";
@@ -62,16 +64,69 @@ export function FeaturedDrop() {
             />
           </div>
           <p className="max-w-2xl text-base leading-8 text-black/60">
-            Three launch cards, one motion language: hover-driven zoom, soft
-            gradient lift, and a bottom CTA that slides into view just as the
-            silhouette starts to push forward.
+            Three standout pairs from the current drop, each built with a
+            distinct mood, finish, and silhouette made to carry the whole look.
           </p>
         </div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {featuredDrops.map((drop) => (
-            <article
+            <FeaturedDropCard key={drop.id} drop={drop} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeaturedDropCard({
+  drop,
+}: {
+  drop: (typeof featuredDrops)[number];
+}) {
+  const rotateXBase = useMotionValue(0);
+  const rotateYBase = useMotionValue(0);
+  const rotateX = useSpring(rotateXBase, {
+    stiffness: 180,
+    damping: 18,
+    mass: 0.45,
+  });
+  const rotateY = useSpring(rotateYBase, {
+    stiffness: 180,
+    damping: 18,
+    mass: 0.45,
+  });
+
+  const handlePointerMove = (event: {
+    clientX: number;
+    clientY: number;
+    currentTarget: HTMLElement;
+  }) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const percentX = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const percentY = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+    rotateXBase.set(percentY * -7);
+    rotateYBase.set(percentX * 9);
+  };
+
+  return (
+    <motion.div
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 1200,
+        transformStyle: "preserve-3d",
+      }}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={() => {
+        rotateXBase.set(0);
+        rotateYBase.set(0);
+      }}
+    >
+      <Link
               key={drop.id}
+              href={drop.href}
               className="drop-card group relative min-h-[33rem] overflow-hidden rounded-[2.3rem] bg-[#101113] p-6 text-brand-white"
               data-cursor="card"
               data-cursor-label="View"
@@ -116,10 +171,7 @@ export function FeaturedDrop() {
                   </div>
                 </div>
               </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
+      </Link>
+    </motion.div>
   );
 }
