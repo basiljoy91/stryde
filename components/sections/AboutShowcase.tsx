@@ -142,7 +142,10 @@ export function AboutShowcase() {
                   <p className="text-sm leading-7 text-white/68">{member.bio}</p>
                 </div>
                 <div className="relative z-10 flex h-full flex-col justify-between">
-                  <div className="h-28 w-28 rounded-full border border-white/10 bg-white/[0.04]" />
+                  <IdentityAvatar
+                    name={member.name}
+                    accent={index % 2 === 0 ? "lime" : "ember"}
+                  />
                   <div>
                     <h3 className="font-display text-4xl uppercase leading-none text-brand-white">
                       {member.name}
@@ -192,6 +195,38 @@ export function AboutShowcase() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function IdentityAvatar({
+  accent,
+  name,
+}: {
+  accent: "ember" | "lime";
+  name: string;
+}) {
+  const initials = name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  const accentClasses =
+    accent === "lime"
+      ? "from-brand-accent/24 via-brand-accent/10 to-transparent text-brand-accent"
+      : "from-brand-ember/24 via-brand-ember/10 to-transparent text-brand-ember";
+
+  return (
+    <div className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/[0.04]">
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${accentClasses} opacity-90`}
+      />
+      <div className="absolute inset-[9px] rounded-full border border-white/10" />
+      <span className="relative font-display text-5xl uppercase leading-none text-white">
+        {initials}
+      </span>
     </div>
   );
 }

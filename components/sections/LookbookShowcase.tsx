@@ -88,13 +88,24 @@ export function LookbookShowcase() {
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${entry.accentClass} opacity-80`}
                 />
+                <div
+                  className={cn(
+                    "absolute inset-4 rounded-[2rem] border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.18)]",
+                    entry.frameClass,
+                  )}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
                 <ScrollParallax offset={8} className="absolute inset-0">
                   <Image
                     src={entry.image}
                     alt={entry.title}
                     fill
-                    className={cn("object-contain p-8", entry.imageClass)}
+                    sizes="(min-width: 1280px) 30vw, (min-width: 768px) 46vw, 92vw"
+                    className={cn(
+                      "transition-transform duration-700 ease-out group-hover:scale-[1.04]",
+                      entry.cardImageClass,
+                      entry.imageClass,
+                    )}
                   />
                 </ScrollParallax>
                 <div className="absolute inset-x-0 bottom-0 z-10 translate-y-8 bg-gradient-to-t from-black to-transparent px-6 pb-6 pt-14 opacity-0 transition duration-500 group-hover:translate-y-0 group-hover:opacity-100">
@@ -165,11 +176,21 @@ export function LookbookShowcase() {
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${activeEntry.accentClass} opacity-80`}
                     />
+                    <div
+                      className={cn(
+                        "absolute inset-5 rounded-[2rem] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.18)]",
+                        activeEntry.frameClass,
+                      )}
+                    />
                     <Image
                       src={activeEntry.image}
                       alt={activeEntry.title}
                       fill
-                      className={cn("object-contain p-8 sm:p-10", activeEntry.imageClass)}
+                      sizes="(min-width: 1024px) 56vw, 92vw"
+                      className={cn(
+                        "object-contain p-8 sm:p-10",
+                        activeEntry.imageClass,
+                      )}
                     />
                   </div>
 

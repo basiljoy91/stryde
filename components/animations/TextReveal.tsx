@@ -31,10 +31,10 @@ export function TextReveal({
       gsap.set(ref.current, { autoAlpha: 1 });
 
       const split = SplitText.create(ref.current, {
-        type: "lines,chars",
-        mask: "lines",
+        type: "words,chars",
+        mask: "words",
         charsClass: "text-reveal-char",
-        linesClass: "text-reveal-line",
+        wordsClass: "text-reveal-word",
       });
 
       gsap.from(split.chars, {

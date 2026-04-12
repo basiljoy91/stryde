@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useRef } from "react";
 
 import { ArrowRight } from "lucide-react";
@@ -10,10 +10,22 @@ import { SplitText, gsap } from "@/lib/gsap";
 import {
   heroIntroLabels,
   heroProduct,
+  heroStats,
   zoomFeatureTags,
 } from "@/lib/constants";
 import { MagneticButton } from "@/components/animations/MagneticButton";
 import { Badge } from "@/components/ui/Badge";
+
+const ProductViewer3D = dynamic(
+  () =>
+    import("@/components/ui/ProductViewer3D").then(
+      (module) => module.ProductViewer3D,
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="h-full w-full" />,
+  },
+);
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -26,6 +38,7 @@ export function Hero() {
   const darkLayerRef = useRef<HTMLDivElement | null>(null);
   const lightLayerRef = useRef<HTMLDivElement | null>(null);
   const labelsRef = useRef<HTMLDivElement | null>(null);
+  const statsRef = useRef<HTMLDivElement | null>(null);
   const featureTagsRef = useRef<HTMLDivElement | null>(null);
 
   useGSAP(
@@ -41,6 +54,7 @@ export function Hero() {
         !darkLayerRef.current ||
         !lightLayerRef.current ||
         !labelsRef.current ||
+        !statsRef.current ||
         !featureTagsRef.current
       ) {
         return;
@@ -59,6 +73,10 @@ export function Hero() {
         "[data-feature-tag]",
         featureTagsRef.current,
       );
+      const statCards = gsap.utils.toArray<HTMLElement>(
+        "[data-hero-stat]",
+        statsRef.current,
+      );
 
       gsap.set(shoeRef.current, {
         scale: 0.72,
@@ -67,6 +85,7 @@ export function Hero() {
       });
       gsap.set(lightLayerRef.current, { autoAlpha: 0 });
       gsap.set(featureTags, { autoAlpha: 0 });
+      gsap.set(statCards, { autoAlpha: 0, y: 28 });
       gsap.set(featureTags[0], { xPercent: -20, y: 24 });
       gsap.set(featureTags[1], { y: 34 });
       gsap.set(featureTags[2], { xPercent: 20, y: 24 });
@@ -114,8 +133,8 @@ export function Hero() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=220%",
-          scrub: 1.1,
+          end: "+=145%",
+          scrub: 0.95,
           pin: pinRef.current,
           anticipatePin: 1,
         },
@@ -125,11 +144,20 @@ export function Hero() {
         .to(
           shoeRef.current,
           {
-            scale: 1.8,
-            yPercent: -46,
+            scale: 1.34,
+            yPercent: -50,
             ease: "none",
           },
           0,
+        )
+        .to(
+          shoeRef.current,
+          {
+            scale: 1.62,
+            yPercent: -44,
+            ease: "none",
+          },
+          0.42,
         )
         .to(
           headlineWrapRef.current,
@@ -185,6 +213,16 @@ export function Hero() {
           0.2,
         )
         .to(
+          statCards,
+          {
+            autoAlpha: 1,
+            duration: 0.28,
+            stagger: 0.06,
+            y: 0,
+          },
+          0.38,
+        )
+        .to(
           featureTags[0],
           {
             autoAlpha: 1,
@@ -192,7 +230,7 @@ export function Hero() {
             xPercent: 0,
             y: 0,
           },
-          0.45,
+          0.56,
         )
         .to(
           featureTags[1],
@@ -201,7 +239,7 @@ export function Hero() {
             duration: 0.35,
             y: 0,
           },
-          0.52,
+          0.62,
         )
         .to(
           featureTags[2],
@@ -211,7 +249,7 @@ export function Hero() {
             xPercent: 0,
             y: 0,
           },
-          0.59,
+          0.68,
         );
 
       return () => split.revert();
@@ -292,13 +330,31 @@ export function Hero() {
           ref={shoeRef}
           className="pointer-events-none absolute left-1/2 top-1/2 z-20 h-[50vh] w-[82vw] max-w-[980px]"
         >
-          <Image
-            src={heroProduct.image}
-            alt={heroProduct.name}
-            fill
-            priority
-            className="object-contain drop-shadow-[0_48px_110px_rgba(0,0,0,0.6)]"
-          />
+          <ProductViewer3D image={heroProduct.image} tone="dark" />
+        </div>
+
+        <div
+          ref={statsRef}
+          className="pointer-events-none absolute inset-x-0 top-32 z-30 sm:top-36"
+        >
+          <div className="container-shell">
+            <div className="ml-auto grid max-w-3xl grid-cols-3 gap-2 sm:gap-4">
+              {heroStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  data-hero-stat
+                  className="rounded-[1.5rem] border border-black/10 bg-white/68 px-3 py-4 text-brand-black shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm sm:px-5"
+                >
+                  <p className="font-display text-[clamp(2rem,4vw,3.25rem)] uppercase leading-none">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-[0.58rem] font-semibold uppercase tracking-[0.22em] text-black/46 sm:text-[0.68rem]">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div

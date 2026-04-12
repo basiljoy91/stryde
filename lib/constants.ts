@@ -276,7 +276,7 @@ const productColorSwatches: Record<ProductColor, string> = {
 function withStudioMedia(product: CollectionProduct): CollectionProduct {
   const media = productStudioMedia[product.id as keyof typeof productStudioMedia];
   const primaryColor = product.colors[0];
-  const image = media?.image ?? product.image;
+  const image = media?.image ?? studioHeroImage;
   const imageClass = media?.imageClass ?? studioImageClass;
 
   return {
@@ -817,6 +817,8 @@ export const lookbookEntries = [
     image: "/images/products/lookbook-01.jpg",
     imageClass: studioImageClassLarge,
     accentClass: "from-brand-accent/30 via-transparent to-transparent",
+    cardImageClass: "object-cover object-center",
+    frameClass: "bg-[#f3efe7]",
     tall: true,
   },
   {
@@ -826,6 +828,8 @@ export const lookbookEntries = [
     image: "/images/products/lookbook-02.jpg",
     imageClass: studioImageClass,
     accentClass: "from-white/18 via-transparent to-transparent",
+    cardImageClass: "object-cover object-center",
+    frameClass: "bg-[#d7d9de]",
     tall: false,
   },
   {
@@ -835,6 +839,8 @@ export const lookbookEntries = [
     image: "/images/products/lookbook-03.jpg",
     imageClass: studioImageClassLarge,
     accentClass: "from-brand-ember/28 via-transparent to-transparent",
+    cardImageClass: "object-cover object-center",
+    frameClass: "bg-[#ececec]",
     tall: false,
   },
   {
@@ -844,6 +850,8 @@ export const lookbookEntries = [
     image: productStudioMedia["pulse-racer"].image,
     imageClass: productStudioMedia["pulse-racer"].imageClass,
     accentClass: "from-lime-200/26 via-transparent to-transparent",
+    cardImageClass: "object-cover object-center",
+    frameClass: "bg-black",
     tall: true,
   },
   {
@@ -853,6 +861,8 @@ export const lookbookEntries = [
     image: productStudioMedia["city-arc"].image,
     imageClass: productStudioMedia["city-arc"].imageClass,
     accentClass: "from-sky-200/24 via-transparent to-transparent",
+    cardImageClass: "object-cover object-center",
+    frameClass: "bg-[#22272e]",
     tall: false,
   },
   {
@@ -862,6 +872,8 @@ export const lookbookEntries = [
     image: productStudioMedia["gallery-low"].image,
     imageClass: productStudioMedia["gallery-low"].imageClass,
     accentClass: "from-stone-200/24 via-transparent to-transparent",
+    cardImageClass: "object-cover object-center",
+    frameClass: "bg-[#121212]",
     tall: false,
   },
 ];

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -20,6 +21,17 @@ import {
 } from "@/lib/constants";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
+
+const ProductViewer3D = dynamic(
+  () =>
+    import("@/components/ui/ProductViewer3D").then(
+      (module) => module.ProductViewer3D,
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="h-full w-full" />,
+  },
+);
 
 type ProductDetailShowcaseProps = {
   product: CollectionProduct;
@@ -137,14 +149,10 @@ export function ProductDetailShowcase({
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute inset-0"
                 >
-                  <Image
-                    src={activeGalleryItem.image}
-                    alt={product.name}
-                    fill
-                    className={cn(
-                      "object-contain p-6 sm:p-10",
-                      selectedColor.imageClass || activeGalleryItem.imageClass,
-                    )}
+                  <ProductViewer3D
+                    image={activeGalleryItem.image}
+                    interactive
+                    tone="light"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -183,6 +191,9 @@ export function ProductDetailShowcase({
               <div className="rounded-[1.6rem] border border-white/10 bg-white/[0.03] px-5 py-4">
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-white/68">
                   Single studio cutout supplied for this product.
+                </p>
+                <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/42">
+                  Drag the 3D viewer to inspect the silhouette.
                 </p>
               </div>
             )}

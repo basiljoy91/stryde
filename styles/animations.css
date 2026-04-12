@@ -32,10 +32,11 @@
     }
   }
 
-  .text-reveal-line {
-    display: block;
+  .text-reveal-word {
+    display: inline-block;
     overflow: hidden;
     padding-bottom: 0.08em;
+    vertical-align: top;
   }
 
   .text-reveal-char {
