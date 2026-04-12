@@ -58,6 +58,16 @@
     }
   }
 
+  @keyframes loading-sweep {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   .text-reveal-word {
     display: inline-block;
     overflow: hidden;
@@ -109,5 +119,10 @@
     animation: particle-drift 4.5s ease-in-out infinite;
     box-shadow: 0 0 24px rgba(255, 255, 255, 0.15);
     will-change: transform, opacity;
+  }
+
+  .loading-bar {
+    animation: loading-sweep 1.2s ease-in-out infinite;
+    will-change: transform;
   }
 }

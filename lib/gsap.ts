@@ -5,6 +5,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/dist/SplitText";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
+try {
+  gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
+} catch (error) {
+  console.error("Failed to register GSAP plugins", error);
+}
 
 export { gsap, ScrollTrigger, SplitText };
