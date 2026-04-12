@@ -34,6 +34,7 @@ export const useCart = create<CartState>((set) => ({
 
       if (existingItem) {
         return {
+          isOpen: true,
           items: state.items.map((entry) =>
             entry.id === item.id && entry.colorway === item.colorway
               ? { ...entry, quantity: entry.quantity + 1 }

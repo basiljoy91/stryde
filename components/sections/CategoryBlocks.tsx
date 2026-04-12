@@ -40,7 +40,7 @@ export function CategoryBlocks() {
                       {block.description}
                     </p>
                     <div className="mt-8">
-                      <MagneticButton href="#newsletter" variant="secondary" size="sm">
+                      <MagneticButton href={block.href} variant="secondary" size="sm">
                         {block.cta}
                       </MagneticButton>
                     </div>

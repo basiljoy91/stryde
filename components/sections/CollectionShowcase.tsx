@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -19,6 +20,7 @@ import { Button } from "@/components/ui/Button";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { collectionProducts } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/hooks/useCart";
 
 type Category = "All" | "Basketball" | "Running" | "Lifestyle";
 type Size = "All" | "7" | "8" | "9" | "10" | "11" | "12";
@@ -45,8 +47,20 @@ const colorMap: Record<string, string> = {
   Charcoal: "#303030",
 };
 
-export function CollectionShowcase() {
-  const [category, setCategory] = useState<Category>("All");
+type CollectionShowcaseProps = {
+  initialCategory?: string;
+};
+
+export function CollectionShowcase({
+  initialCategory,
+}: CollectionShowcaseProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const addItem = useCart((state) => state.addItem);
+  const normalizedCategory = categoryOptions.includes(initialCategory as Category)
+    ? (initialCategory as Category)
+    : "All";
+  const [category, setCategory] = useState<Category>(normalizedCategory);
   const [size, setSize] = useState<Size>("All");
   const [color, setColor] = useState<Color>("All");
   const [priceRange, setPriceRange] = useState<PriceRange>("All");
@@ -97,12 +111,30 @@ export function CollectionShowcase() {
     clear: () => void;
   }>;
 
-  const handleFilterChange = <T,>(
-    setter: (value: T) => void,
-    value: T,
-  ) => {
+  const updateCategoryParam = (nextCategory: Category) => {
+    const params =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : new URLSearchParams();
+
+    if (nextCategory === "All") {
+      params.delete("category");
+    } else {
+      params.set("category", nextCategory);
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
+  const handleFilterChange = <T,>(setter: (value: T) => void, value: T) => {
     setter(value);
     setVisibleCount(6);
+  };
+
+  const handleCategoryChange = (value: Category) => {
+    handleFilterChange(setCategory, value);
+    updateCategoryParam(value);
   };
 
   const handleLoadMore = () => {
@@ -133,7 +165,7 @@ export function CollectionShowcase() {
             <span className="text-white/74">Collection</span>
           </nav>
 
-          <p className="eyebrow">Collection / Filter System</p>
+          <p className="eyebrow">Collection / Performance Archive</p>
           <TextReveal
             as="h1"
             text="COLLECTION"
@@ -145,8 +177,9 @@ export function CollectionShowcase() {
             transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="mt-5 max-w-2xl text-base leading-8 text-white/65"
           >
-            A filterable performance catalog with animated reflow, sticky controls,
-            quick-add interactions, and a load-more rhythm tuned to the same brand system.
+            Browse every silhouette by category, size, color, and price without
+            leaving the flow. Each card is framed like a studio asset so the
+            collection reads as one world instead of a pile of mismatched uploads.
           </motion.p>
         </header>
 
@@ -193,7 +226,7 @@ export function CollectionShowcase() {
                 label="Category"
                 options={categoryOptions}
                 value={category}
-                onChange={(value) => handleFilterChange(setCategory, value)}
+                onChange={handleCategoryChange}
               />
               <FilterGroup
                 label="Size"
@@ -254,6 +287,15 @@ export function CollectionShowcase() {
                 product={product}
                 viewMode={viewMode}
                 tall={viewMode === "masonry" && index % 3 === 1}
+                onQuickAdd={() =>
+                  addItem({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    colorway: product.colors[0] ?? "Core",
+                    image: product.image,
+                  })
+                }
               />
             ))}
           </AnimatePresence>
@@ -342,10 +384,12 @@ function FilterGroup<T extends string>({
 type Product = (typeof collectionProducts)[number];
 
 function ProductCard({
+  onQuickAdd,
   product,
   tall,
   viewMode,
 }: {
+  onQuickAdd: () => void;
   product: Product;
   tall: boolean;
   viewMode: ViewMode;
@@ -391,12 +435,20 @@ function ProductCard({
         </div>
 
         <div className={cn("relative flex-1", tall ? "min-h-[19rem]" : "min-h-[16rem]")}>
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className={`object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.08] ${product.imageClass}`}
-          />
+          <div className="absolute inset-0 rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,#f4efe4_0%,#ebe5d9_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_22px_44px_rgba(0,0,0,0.18)]" />
+          <div className="absolute inset-[1px] rounded-[1.75rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.92),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.12),transparent_36%)]" />
+          <div className="absolute left-4 top-4 z-10 rounded-pill border border-black/8 bg-black/5 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-black/45">
+            Studio frame
+          </div>
+          <div className="absolute inset-0 overflow-hidden rounded-[1.8rem]">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(min-width: 1280px) 28vw, (min-width: 640px) 44vw, 100vw"
+              className={`object-cover p-3 transition-transform duration-700 ease-out group-hover:scale-[1.05] ${product.imageClass}`}
+            />
+          </div>
         </div>
 
         <div className="mt-auto">
@@ -429,6 +481,11 @@ function ProductCard({
               <Button
                 className="mt-5 w-full"
                 size="sm"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onQuickAdd();
+                }}
               >
                 Quick Add
               </Button>

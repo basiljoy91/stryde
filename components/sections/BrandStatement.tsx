@@ -23,7 +23,7 @@ export function BrandStatement() {
         <div className="max-w-2xl pt-2">
           <TextReveal
             as="p"
-            text="Stryde treats the homepage like a product film. Typography lands like impact, the shoe holds center frame, and every scroll beat pushes the viewer deeper into the object instead of away from it."
+            text="Stryde builds footwear for people who move with intent. Every pair is shaped to feel light off the ground, secure through the turn, and sharp enough to live beyond the session that inspired it."
             className="text-lg leading-9 text-white/72"
           />
         </div>

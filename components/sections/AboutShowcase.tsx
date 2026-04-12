@@ -107,9 +107,7 @@ export function AboutShowcase() {
                   </div>
                   <div className="flex items-center">
                     <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.06] to-transparent p-6 text-sm leading-8 text-white/52 sm:p-8">
-                      Each milestone sharpened the same idea: product pages
-                      should feel authored, immersive, and unmistakably tied to
-                      the object they sell.
+                      {item.detail}
                     </div>
                   </div>
                 </div>

@@ -276,9 +276,9 @@ export function Hero() {
 
         <div className="container-shell relative z-10 flex h-full flex-col justify-between pb-14 pt-28">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <Badge variant="accent">SS26 / Hero Zoom</Badge>
+            <Badge variant="accent">{heroProduct.code}</Badge>
             <span className="eyebrow text-white/45">
-              Signature scroll sequence
+              {heroProduct.eyebrow}
             </span>
           </div>
 
@@ -303,7 +303,7 @@ export function Hero() {
                 <ArrowRight className="h-4 w-4" />
               </MagneticButton>
               <span className="text-xs uppercase tracking-[0.28em] text-white/42">
-                Scroll to trigger the pin zoom.
+                Scroll to step inside the silhouette.
               </span>
             </div>
           </div>

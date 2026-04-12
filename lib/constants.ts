@@ -71,9 +71,9 @@ const productStudioMedia = {
 
 export const heroProduct = {
   id: "apex-jump-01",
-  code: "2026 PF",
+  code: "Spring / Summer 2026",
   name: "Apex Jump 01",
-  eyebrow: "Phase 2 / Home Showcase",
+  eyebrow: "Editorial performance footwear",
   headlinePrimary: "STRYDE",
   headlineSecondary: "Engineered for speed. Built to hold the gaze.",
   price: 184,
@@ -83,9 +83,9 @@ export const heroProduct = {
 };
 
 export const heroIntroLabels = [
-  "Split-text intro",
-  "Pinned zoom reveal",
-  "Motion-first commerce",
+  "Featherweight upper",
+  "Locked-in support",
+  "Launch edition finish",
 ];
 
 export const zoomFeatureTags = [
@@ -184,6 +184,7 @@ export const categoryBlocks = [
     description:
       "Lightweight uppers, fast transitions, and tonal cushioning details tuned for daily distance and high-tempo training blocks.",
     cta: "Shop Running",
+    href: "/collection?category=Running",
     image: "/images/products/category-running.jpg",
     imageClass: studioImageClass,
   },
@@ -193,6 +194,7 @@ export const categoryBlocks = [
     description:
       "Clean silhouettes and premium matte finishes shaped to move from city commute to after-hours rotation without losing edge.",
     cta: "Shop Lifestyle",
+    href: "/collection?category=Lifestyle",
     image: "/images/products/category-lifestyle.jpg",
     imageClass: studioImageClass,
   },
@@ -202,6 +204,7 @@ export const categoryBlocks = [
     description:
       "Scarce runs with louder color stories, numbered packaging, and campaign-led details reserved for the shortest release windows.",
     cta: "Shop Limited",
+    href: "/collection?category=Basketball",
     image: "/images/products/category-limited.jpg",
     imageClass: studioImageClass,
   },
@@ -210,15 +213,30 @@ export const categoryBlocks = [
 export const footerColumns = [
   {
     title: "Shop",
-    links: ["New arrivals", "Performance", "Limited drops", "Gift cards"],
+    links: [
+      { label: "New arrivals", href: "/collection" },
+      { label: "Running", href: "/collection?category=Running" },
+      { label: "Limited drops", href: "/collection?category=Basketball" },
+      { label: "Lookbook", href: "/lookbook" },
+    ],
   },
   {
     title: "Support",
-    links: ["Shipping", "Returns", "Sizing", "Track order"],
+    links: [
+      { label: "Shipping", href: "/contact" },
+      { label: "Returns", href: "/contact" },
+      { label: "Sizing", href: "/collection" },
+      { label: "Contact", href: "/contact" },
+    ],
   },
   {
     title: "Company",
-    links: ["About", "Journal", "Careers", "Contact"],
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Lookbook", href: "/lookbook" },
+      { label: "Collection", href: "/collection" },
+      { label: "Contact", href: "/contact" },
+    ],
   },
 ];
 
@@ -742,24 +760,32 @@ export const aboutTimeline = [
     title: "Prototype Zero",
     description:
       "Stryde began as a material study exploring how editorial visual language could shape performance product storytelling.",
+    detail:
+      "What started as a materials exercise became a clear design position: make footwear feel cinematic without losing product clarity.",
   },
   {
     year: "2020",
     title: "Motion Lab",
     description:
       "We built our first internal motion system, pairing object-focused layouts with scroll choreography and studio-grade pacing.",
+    detail:
+      "This was the year we learned how movement could guide attention, letting cushioning, tooling, and silhouette do the talking.",
   },
   {
     year: "2023",
     title: "Drop Framework",
     description:
       "The brand moved from one-off concepts into a repeatable release engine spanning collections, product detail, and campaign storytelling.",
+    detail:
+      "Release structure tightened here: sharper launches, clearer category stories, and a product system that could scale without feeling generic.",
   },
   {
     year: "2026",
     title: "Stryde SS26",
     description:
       "The current system unifies commerce, editorial, and interaction design into one immersive footwear showcase.",
+    detail:
+      "The latest chapter brings everything together into a polished retail experience built around real product imagery and confident brand language.",
   },
 ];
 

@@ -74,7 +74,14 @@ export function Footer() {
                   </h3>
                   <div className="mt-4 space-y-3 text-sm text-white/60">
                     {column.links.map((link) => (
-                      <p key={link}>{link}</p>
+                      <Link
+                        key={link.label}
+                        href={link.href}
+                        data-cursor="button"
+                        className="block transition hover:text-brand-white"
+                      >
+                        {link.label}
+                      </Link>
                     ))}
                   </div>
                 </div>

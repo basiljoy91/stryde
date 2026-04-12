@@ -19,10 +19,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CollectionPage() {
+export default async function CollectionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+
   return (
     <PageWrapper>
-      <CollectionShowcase />
+      <CollectionShowcase initialCategory={resolvedSearchParams.category} />
     </PageWrapper>
   );
 }

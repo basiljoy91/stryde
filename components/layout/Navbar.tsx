@@ -107,14 +107,14 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <Link
+              href="/collection"
               data-cursor="button"
               aria-label="Search catalogue"
               className="hidden h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/80 transition hover:border-brand-accent/35 hover:text-brand-white sm:flex"
             >
               <Search className="h-[18px] w-[18px]" />
-            </button>
+            </Link>
             <button
               type="button"
               data-cursor="button"
@@ -127,9 +127,15 @@ export function Navbar() {
                 {itemCount}
               </span>
             </button>
-            <div className="hidden h-11 w-11 items-center justify-center rounded-full border border-brand-accent/20 bg-brand-accent/10 text-brand-accent sm:flex">
+            <Link
+              href="/lookbook"
+              data-cursor="button"
+              aria-label="Open lookbook"
+              title="Open lookbook"
+              className="hidden h-11 w-11 items-center justify-center rounded-full border border-brand-accent/20 bg-brand-accent/10 text-brand-accent transition hover:border-brand-accent/45 hover:bg-brand-accent/16 sm:flex"
+            >
               <Sparkles className="h-[18px] w-[18px]" />
-            </div>
+            </Link>
             <button
               type="button"
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -192,7 +198,10 @@ export function Navbar() {
                 </p>
                 <button
                   type="button"
-                  onClick={openCart}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    openCart();
+                  }}
                   data-cursor="button"
                   className="inline-flex items-center gap-2 rounded-pill border border-white/10 px-4 py-3 text-xs font-semibold uppercase tracking-[0.24em] text-white"
                 >
