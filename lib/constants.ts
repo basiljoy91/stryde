@@ -12,6 +12,63 @@ export const socialLinks = [
   { label: "Dribbble", href: "https://dribbble.com" },
 ];
 
+const studioHeroImage = "/images/products/hero-main.png";
+const studioImageClass =
+  "scale-[1.02] drop-shadow-[0_26px_76px_rgba(0,0,0,0.26)]";
+const studioImageClassLarge =
+  "scale-[1.04] drop-shadow-[0_32px_90px_rgba(0,0,0,0.28)]";
+
+const productStudioMedia = {
+  "flux-court-mid": {
+    image: "/images/products/flux-court-mid.jpg",
+    imageClass: studioImageClass,
+  },
+  "torque-glide": {
+    image: "/images/products/torque-glide.jpg",
+    imageClass: studioImageClass,
+  },
+  "echo-shift-low": {
+    image: "/images/products/echo-shift-low.jpg",
+    imageClass: studioImageClass,
+  },
+  "vector-pace": {
+    image: "/images/products/vector-pace.png",
+    imageClass: studioImageClassLarge,
+  },
+  "mono-stride": {
+    image: "/images/products/mono-stride.jpg",
+    imageClass: studioImageClass,
+  },
+  "aero-clash": {
+    image: "/images/products/aero-clash.jpg",
+    imageClass: studioImageClassLarge,
+  },
+  "district-runner": {
+    image: "/images/products/district-runner.jpg",
+    imageClass: studioImageClass,
+  },
+  "gallery-low": {
+    image: "/images/products/gallery-low.jpg",
+    imageClass: studioImageClass,
+  },
+  "vault-flight": {
+    image: "/images/products/vault-flight.jpg",
+    imageClass: studioImageClass,
+  },
+  "city-arc": {
+    image: "/images/products/city-arc.jpg",
+    imageClass: studioImageClass,
+  },
+  "pulse-racer": {
+    image: "/images/products/pulse-racer.jpg",
+    imageClass: studioImageClass,
+  },
+  "court-index": {
+    image: "/images/products/court-index.jpg",
+    imageClass: studioImageClass,
+  },
+} as const;
+
 export const heroProduct = {
   id: "apex-jump-01",
   code: "2026 PF",
@@ -22,7 +79,7 @@ export const heroProduct = {
   price: 184,
   description:
     "A dark editorial landing story where the hero pins, zooms, and transforms into a product system built around motion and contrast.",
-  image: "/images/hero-shoe.svg",
+  image: studioHeroImage,
 };
 
 export const heroIntroLabels = [
@@ -90,8 +147,8 @@ export const featuredDrops = [
     name: "Flux Court Mid",
     price: "$164",
     summary: "Reactive knit upper with pressure-mapped traction and a low-profile heel clip.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-16deg] scale-[1.06] hue-rotate-[58deg] saturate-[1.2]",
+    image: productStudioMedia["flux-court-mid"].image,
+    imageClass: productStudioMedia["flux-court-mid"].imageClass,
     accentClass: "from-brand-accent/25 via-brand-accent/8 to-transparent",
   },
   {
@@ -99,8 +156,8 @@ export const featuredDrops = [
     name: "Torque Glide",
     price: "$172",
     summary: "A faster-cut silhouette built for guards who want snap, flex, and lightweight support.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-12deg] scale-[1.08] hue-rotate-[320deg] saturate-[1.15]",
+    image: productStudioMedia["torque-glide"].image,
+    imageClass: productStudioMedia["torque-glide"].imageClass,
     accentClass: "from-brand-ember/25 via-brand-ember/10 to-transparent",
   },
   {
@@ -108,8 +165,8 @@ export const featuredDrops = [
     name: "Echo Shift Low",
     price: "$158",
     summary: "Street-to-court hybrid with tonal mesh, sculpted foam, and reflective detailing.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-14deg] scale-[1.05] grayscale brightness-[1.1]",
+    image: productStudioMedia["echo-shift-low"].image,
+    imageClass: productStudioMedia["echo-shift-low"].imageClass,
     accentClass: "from-white/20 via-white/8 to-transparent",
   },
 ];
@@ -127,8 +184,8 @@ export const categoryBlocks = [
     description:
       "Lightweight uppers, fast transitions, and tonal cushioning details tuned for daily distance and high-tempo training blocks.",
     cta: "Shop Running",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-14deg] scale-[1.08] hue-rotate-[34deg] saturate-[1.22]",
+    image: "/images/products/category-running.jpg",
+    imageClass: studioImageClass,
   },
   {
     title: "Lifestyle",
@@ -136,8 +193,8 @@ export const categoryBlocks = [
     description:
       "Clean silhouettes and premium matte finishes shaped to move from city commute to after-hours rotation without losing edge.",
     cta: "Shop Lifestyle",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[14deg] scale-[1.04] grayscale brightness-[1.12]",
+    image: "/images/products/category-lifestyle.jpg",
+    imageClass: studioImageClass,
   },
   {
     title: "Limited",
@@ -145,8 +202,8 @@ export const categoryBlocks = [
     description:
       "Scarce runs with louder color stories, numbered packaging, and campaign-led details reserved for the shortest release windows.",
     cta: "Shop Limited",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-10deg] scale-[1.06] hue-rotate-[330deg] saturate-[1.18]",
+    image: "/images/products/category-limited.jpg",
+    imageClass: studioImageClass,
   },
 ];
 
@@ -205,7 +262,49 @@ export type CollectionProduct = {
   }>;
 };
 
-export const collectionProducts: CollectionProduct[] = [
+const productColorSwatches: Record<ProductColor, string> = {
+  Black: "#121212",
+  Charcoal: "#303030",
+  Ember: "#FF5336",
+  Ivory: "#F5F5F0",
+  Silver: "#C8CED7",
+  Slate: "#5C6370",
+  Stone: "#C3B9A5",
+  Volt: "#E8FF47",
+};
+
+function withStudioMedia(product: CollectionProduct): CollectionProduct {
+  const media = productStudioMedia[product.id as keyof typeof productStudioMedia];
+  const primaryColor = product.colors[0];
+  const image = media?.image ?? product.image;
+  const imageClass = media?.imageClass ?? studioImageClass;
+
+  return {
+    ...product,
+    colors: primaryColor ? [primaryColor] : product.colors,
+    image,
+    imageClass,
+    gallery: [
+      {
+        id: "studio",
+        label: "Studio view",
+        image,
+        imageClass,
+      },
+    ],
+    variants: primaryColor
+      ? [
+          {
+            name: primaryColor,
+            imageClass,
+            swatch: productColorSwatches[primaryColor],
+          },
+        ]
+      : [],
+  };
+}
+
+const rawCollectionProducts: CollectionProduct[] = [
   {
     id: "flux-court-mid",
     name: "Flux Court Mid",
@@ -631,6 +730,8 @@ export const collectionProducts: CollectionProduct[] = [
   },
 ];
 
+export const collectionProducts = rawCollectionProducts.map(withStudioMedia);
+
 export function getProductById(id: string) {
   return collectionProducts.find((product) => product.id === id);
 }
@@ -713,8 +814,8 @@ export const lookbookEntries = [
     id: "frame-01",
     title: "Studio Pulse",
     caption: "Hard light, matte black space, and the first launch silhouette in motion.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-14deg] scale-[1.08] hue-rotate-[58deg] saturate-[1.15]",
+    image: "/images/products/lookbook-01.jpg",
+    imageClass: studioImageClassLarge,
     accentClass: "from-brand-accent/30 via-transparent to-transparent",
     tall: true,
   },
@@ -722,8 +823,8 @@ export const lookbookEntries = [
     id: "frame-02",
     title: "After Hours",
     caption: "A softer grayscale treatment built for the lifestyle side of the collection.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[10deg] scale-[1.02] grayscale brightness-[1.05]",
+    image: "/images/products/lookbook-02.jpg",
+    imageClass: studioImageClass,
     accentClass: "from-white/18 via-transparent to-transparent",
     tall: false,
   },
@@ -731,8 +832,8 @@ export const lookbookEntries = [
     id: "frame-03",
     title: "Heat Check",
     caption: "High-contrast ember palette pushing the product into a sharper editorial frame.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-10deg] scale-[1.05] hue-rotate-[340deg] saturate-[1.18]",
+    image: "/images/products/lookbook-03.jpg",
+    imageClass: studioImageClassLarge,
     accentClass: "from-brand-ember/28 via-transparent to-transparent",
     tall: false,
   },
@@ -740,8 +841,8 @@ export const lookbookEntries = [
     id: "frame-04",
     title: "Velocity Board",
     caption: "Colorway studies pinned against an almost architectural background system.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[14deg] scale-[1.04] hue-rotate-[80deg] saturate-[1.2]",
+    image: productStudioMedia["pulse-racer"].image,
+    imageClass: productStudioMedia["pulse-racer"].imageClass,
     accentClass: "from-lime-200/26 via-transparent to-transparent",
     tall: true,
   },
@@ -749,8 +850,8 @@ export const lookbookEntries = [
     id: "frame-05",
     title: "Mirror Run",
     caption: "Reflective highlights and low-angle framing pushing the shape forward.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-18deg] scale-[1.1] hue-rotate-[18deg] brightness-[1.02]",
+    image: productStudioMedia["city-arc"].image,
+    imageClass: productStudioMedia["city-arc"].imageClass,
     accentClass: "from-sky-200/24 via-transparent to-transparent",
     tall: false,
   },
@@ -758,8 +859,8 @@ export const lookbookEntries = [
     id: "frame-06",
     title: "Quiet Form",
     caption: "A cleaner neutral composition where proportion and material carry the story.",
-    image: "/images/hero-shoe.svg",
-    imageClass: "rotate-[-8deg] scale-[1.03] hue-rotate-[10deg] saturate-[0.82]",
+    image: productStudioMedia["gallery-low"].image,
+    imageClass: productStudioMedia["gallery-low"].imageClass,
     accentClass: "from-stone-200/24 via-transparent to-transparent",
     tall: false,
   },
