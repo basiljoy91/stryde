@@ -20,23 +20,25 @@ export function SectionTransition({
         return;
       }
 
+      const line = ref.current.querySelector("[data-transition-line]");
+      const text = ref.current.querySelector("[data-transition-label]");
+
       gsap.fromTo(
-        ref.current,
+        [line, text],
         {
-          clipPath: "inset(48% 0 48% 0 round 999px)",
-          opacity: 0.35,
-          scaleX: 0.82,
+          autoAlpha: 0,
+          y: 14,
         },
         {
-          clipPath: "inset(0% 0 0% 0 round 999px)",
-          opacity: 1,
-          scaleX: 1,
-          ease: "power3.out",
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.08,
+          ease: "power2.out",
           scrollTrigger: {
             trigger: ref.current,
-            start: "top 86%",
-            end: "bottom 56%",
-            scrub: 1,
+            start: "top 88%",
+            once: true,
           },
         },
       );
@@ -46,18 +48,21 @@ export function SectionTransition({
 
   const accentClass =
     accent === "ember"
-      ? "from-brand-ember/50 via-white/14 to-transparent"
-      : "from-brand-accent/50 via-white/14 to-transparent";
+      ? "from-transparent via-brand-ember/50 to-transparent"
+      : "from-transparent via-brand-accent/50 to-transparent";
 
   return (
-    <div className="relative bg-brand-black py-5">
-      <div className="container-shell">
-        <div
-          ref={ref}
-          className={`relative overflow-hidden rounded-pill border border-white/10 bg-gradient-to-r ${accentClass} px-6 py-4`}
-        >
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),transparent_60%)]" />
-          <p className="relative text-center text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-brand-white/72">
+    <div className="relative bg-brand-black py-10 sm:py-12">
+      <div ref={ref} className="container-shell">
+        <div className="mx-auto max-w-3xl">
+          <div
+            data-transition-line
+            className={`h-px w-full bg-gradient-to-r ${accentClass}`}
+          />
+          <p
+            data-transition-label
+            className="pt-4 text-center text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-white/48"
+          >
             {label}
           </p>
         </div>

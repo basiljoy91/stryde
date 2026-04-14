@@ -30,10 +30,9 @@ export default function Home() {
   return (
     <PageWrapper>
       <Hero />
-      <SectionTransition label="From first glance to first drop" />
       <TickerStrip />
       <FeaturedDrop />
-      <SectionTransition accent="ember" label="The standout pairs this season" />
+      <SectionTransition accent="ember" label="Current lineup in focus" />
       <HorizontalShowcase />
       <BrandStatement />
       <SectionTransition label="Built for pace, style, and repeat wear" />

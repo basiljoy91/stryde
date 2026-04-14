@@ -19,10 +19,27 @@ export function CategoryBlocks() {
         return;
       }
 
+      const articles = gsap.utils.toArray<HTMLElement>(
+        "[data-category-article]",
+        sectionRef.current,
+      );
       const mediaPanels = gsap.utils.toArray<HTMLElement>(
         "[data-category-media]",
         sectionRef.current,
       );
+
+      gsap.from(articles, {
+        autoAlpha: 0,
+        y: 40,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 78%",
+          once: true,
+        },
+      });
 
       mediaPanels.forEach((panel, index) => {
         gsap.fromTo(
@@ -32,16 +49,14 @@ export function CategoryBlocks() {
               index % 2 === 0
                 ? "inset(0 100% 0 0 round 2rem)"
                 : "inset(0 0 0 100% round 2rem)",
-            y: 28,
           },
           {
             clipPath: "inset(0 0 0 0 round 2rem)",
-            y: 0,
-            duration: 1,
+            duration: 0.9,
             ease: "power3.out",
             scrollTrigger: {
               trigger: panel,
-              start: "top 78%",
+              start: "top 82%",
               once: true,
             },
           },
@@ -52,43 +67,55 @@ export function CategoryBlocks() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-brand-black py-24 sm:py-28 lg:py-30">
-      <div className="container-shell space-y-6">
+    <section ref={sectionRef} className="bg-brand-black py-24 sm:py-28">
+      <div className="container-shell space-y-8">
         {categoryBlocks.map((block, index) => {
           const isEven = index % 2 === 1;
 
           return (
             <article
               key={block.title}
-              className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-brand-mid"
+              data-category-article
+              className={`overflow-hidden rounded-[2.6rem] border border-white/10 ${block.contentClass}`}
             >
-              <div className="grid lg:grid-cols-2">
+              <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
                 <div
                   data-category-media
-                  className={`${isEven ? "lg:order-2" : ""} relative min-h-[22rem] overflow-hidden bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.08),transparent_40%),#121315]`}
+                  className={`${isEven ? "lg:order-2" : ""} relative min-h-[22rem] overflow-hidden lg:min-h-[30rem] ${block.panelClass}`}
                 >
-                  <div className="grain-overlay absolute inset-0 opacity-[0.18]" />
-                  <ScrollParallax offset={10} className="absolute inset-0">
-                    <Image
-                      src={block.image}
-                      alt={block.title}
-                      fill
-                      className={`object-contain p-8 sm:p-10 ${block.imageClass}`}
-                    />
-                  </ScrollParallax>
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_34%)]" />
+                  <div className="grain-overlay absolute inset-0 opacity-[0.14]" />
+                  <div className="absolute inset-5 rounded-[2rem] border border-white/12 bg-black/8 sm:inset-7" />
+                  <div
+                    className={`absolute inset-5 overflow-hidden rounded-[2rem] sm:inset-7 ${block.frameClass}`}
+                  >
+                    <ScrollParallax offset={8} className="absolute inset-0">
+                      <Image
+                        src={block.image}
+                        alt={block.title}
+                        fill
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        className={`${block.imageFitClass} ${block.imageClass}`}
+                      />
+                    </ScrollParallax>
+                  </div>
                 </div>
 
                 <div className={`${isEven ? "lg:order-1" : ""} flex items-center`}>
                   <div className="p-8 sm:p-10 lg:p-12">
                     <Tag>{block.eyebrow}</Tag>
-                    <h3 className="mt-5 font-display text-[clamp(3.5rem,8vw,5.5rem)] uppercase leading-[0.9] text-brand-white">
+                    <h3 className="mt-5 max-w-[8ch] font-display text-[clamp(3.2rem,8vw,5.4rem)] uppercase leading-[0.9] text-brand-white">
                       {block.title}
                     </h3>
                     <p className="mt-5 max-w-xl text-base leading-8 text-white/68">
                       {block.description}
                     </p>
                     <div className="mt-8">
-                      <MagneticButton href={block.href} variant="secondary" size="sm">
+                      <MagneticButton
+                        href={block.href}
+                        variant="secondary"
+                        size="sm"
+                      >
                         {block.cta}
                       </MagneticButton>
                     </div>

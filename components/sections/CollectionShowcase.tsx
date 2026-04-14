@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
+  ChevronDown,
   ChevronRight,
   Grid2x2,
   LayoutGrid,
@@ -15,9 +16,8 @@ import {
   X,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { TextReveal } from "@/components/animations/TextReveal";
+import { Button } from "@/components/ui/Button";
 import { collectionProducts } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
@@ -57,9 +57,11 @@ export function CollectionShowcase({
   const router = useRouter();
   const pathname = usePathname();
   const addItem = useCart((state) => state.addItem);
+  const openCart = useCart((state) => state.openCart);
   const normalizedCategory = categoryOptions.includes(initialCategory as Category)
     ? (initialCategory as Category)
     : "All";
+
   const [category, setCategory] = useState<Category>(normalizedCategory);
   const [size, setSize] = useState<Size>("All");
   const [color, setColor] = useState<Color>("All");
@@ -67,6 +69,7 @@ export function CollectionShowcase({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [visibleCount, setVisibleCount] = useState(6);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     return collectionProducts.filter((product) => {
@@ -137,6 +140,15 @@ export function CollectionShowcase({
     updateCategoryParam(value);
   };
 
+  const clearAllFilters = () => {
+    setCategory("All");
+    setSize("All");
+    setColor("All");
+    setPriceRange("All");
+    setVisibleCount(6);
+    updateCategoryParam("All");
+  };
+
   const handleLoadMore = () => {
     if (!hasMore || isLoadingMore) {
       return;
@@ -147,16 +159,16 @@ export function CollectionShowcase({
     window.setTimeout(() => {
       setVisibleCount((current) => Math.min(current + 3, filteredProducts.length));
       setIsLoadingMore(false);
-    }, 850);
+    }, 700);
   };
 
   return (
-    <section className="relative min-h-screen bg-brand-black pb-24 pt-28 sm:pb-28 lg:pb-30">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(232,255,71,0.08),transparent_24%),radial-gradient(circle_at_80%_12%,rgba(255,83,54,0.12),transparent_20%),#0A0A0A]" />
-      <div className="grain-overlay absolute inset-0 opacity-[0.22]" />
+    <section className="relative min-h-screen bg-brand-black pb-24 pt-28 sm:pb-28">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(232,255,71,0.07),transparent_22%),radial-gradient(circle_at_80%_10%,rgba(255,83,54,0.1),transparent_18%),#0A0A0A]" />
+      <div className="grain-overlay absolute inset-0 opacity-[0.18]" />
 
       <div className="container-shell relative z-10">
-        <header className="pb-12">
+        <header className="pb-10">
           <nav className="mb-5 flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-white/38">
             <Link href="/" className="transition hover:text-white/70">
               Home
@@ -174,106 +186,150 @@ export function CollectionShowcase({
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-5 max-w-2xl text-base leading-8 text-white/65"
+            transition={{ delay: 0.18, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-5 max-w-2xl text-base leading-8 text-white/64"
           >
             Explore the full Stryde lineup, from fast-cut runners to statement
             court silhouettes and everyday pairs built for repeat wear.
           </motion.p>
         </header>
 
-        <div className="sticky top-24 z-30 mb-7 rounded-[2rem] border border-white/10 bg-brand-black/72 p-4 shadow-panel backdrop-blur-2xl">
+        <div className="sticky top-24 z-30 mb-8 rounded-[1.8rem] border border-white/10 bg-[#111111]/88 p-4 shadow-panel backdrop-blur-xl">
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-sm font-medium uppercase tracking-[0.24em] text-white/62">
-                <SlidersHorizontal className="h-4 w-4" />
-                Filters
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen((current) => !current)}
+                  className="inline-flex items-center gap-2 rounded-pill border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/72 transition hover:border-white/20 hover:text-white"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filters
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform duration-300",
+                      filtersOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+
+                <div className="text-xs uppercase tracking-[0.24em] text-white/42">
+                  {filteredProducts.length} styles
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  data-cursor="button"
                   onClick={() => setViewMode("grid")}
                   className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-full border transition",
                     viewMode === "grid"
-                      ? "border-brand-accent/40 bg-brand-accent/14 text-brand-accent"
-                      : "border-white/10 bg-white/[0.04] text-white/65",
+                      ? "border-brand-accent/40 bg-brand-accent/12 text-brand-accent"
+                      : "border-white/10 bg-white/[0.04] text-white/58",
                   )}
+                  aria-label="Grid view"
                 >
                   <LayoutGrid className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
-                  data-cursor="button"
                   onClick={() => setViewMode("masonry")}
                   className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-full border transition",
                     viewMode === "masonry"
-                      ? "border-brand-accent/40 bg-brand-accent/14 text-brand-accent"
-                      : "border-white/10 bg-white/[0.04] text-white/65",
+                      ? "border-brand-accent/40 bg-brand-accent/12 text-brand-accent"
+                      : "border-white/10 bg-white/[0.04] text-white/58",
                   )}
+                  aria-label="Masonry view"
                 >
                   <Grid2x2 className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
-            <motion.div layout className="grid gap-3 lg:grid-cols-4">
-              <FilterGroup
-                label="Category"
-                options={categoryOptions}
-                value={category}
-                onChange={handleCategoryChange}
-              />
-              <FilterGroup
-                label="Size"
-                options={sizeOptions}
-                value={size}
-                onChange={(value) => handleFilterChange(setSize, value)}
-              />
-              <FilterGroup
-                label="Color"
-                options={colorOptions}
-                value={color}
-                onChange={(value) => handleFilterChange(setColor, value)}
-              />
-              <FilterGroup
-                label="Price Range"
-                options={priceOptions}
-                value={priceRange}
-                onChange={(value) => handleFilterChange(setPriceRange, value)}
-              />
-            </motion.div>
+            <AnimatePresence initial={false}>
+              {filtersOpen ? (
+                <motion.div
+                  key="filters"
+                  initial={{ opacity: 0, height: 0, y: -8 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -8 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="grid gap-3 pt-1 lg:grid-cols-4">
+                    <FilterGroup
+                      label="Category"
+                      options={categoryOptions}
+                      value={category}
+                      onChange={handleCategoryChange}
+                    />
+                    <FilterGroup
+                      label="Size"
+                      options={sizeOptions}
+                      value={size}
+                      onChange={(value) => handleFilterChange(setSize, value)}
+                    />
+                    <FilterGroup
+                      label="Color"
+                      options={colorOptions}
+                      value={color}
+                      onChange={(value) => handleFilterChange(setColor, value)}
+                    />
+                    <FilterGroup
+                      label="Price"
+                      options={priceOptions}
+                      value={priceRange}
+                      onChange={(value) =>
+                        handleFilterChange(setPriceRange, value)
+                      }
+                    />
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
 
-            <motion.div layout className="flex min-h-10 flex-wrap gap-2">
+            <div className="flex min-h-9 flex-wrap items-center gap-2">
               <AnimatePresence initial={false}>
                 {activeFilters.map((filter) => (
                   <motion.button
                     key={filter.key}
                     layout
-                    initial={{ opacity: 0, scale: 0.85, y: 8 }}
+                    initial={{ opacity: 0, scale: 0.92, y: 6 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.85, y: -8 }}
+                    exit={{ opacity: 0, scale: 0.92, y: -6 }}
                     type="button"
-                    data-cursor="button"
                     onClick={filter.clear}
-                    className="inline-flex items-center gap-2 rounded-pill border border-brand-accent/30 bg-brand-accent/12 px-3 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-brand-accent"
+                    className="inline-flex items-center gap-2 rounded-pill border border-brand-accent/26 bg-brand-accent/10 px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-brand-accent"
                   >
                     {filter.label}
                     <X className="h-3.5 w-3.5" />
                   </motion.button>
                 ))}
               </AnimatePresence>
-            </motion.div>
+
+              {activeFilters.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="ml-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/46 transition hover:text-white/74"
+                >
+                  Clear all
+                </button>
+              ) : (
+                <span className="text-[0.68rem] uppercase tracking-[0.24em] text-white/34">
+                  No filters applied
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
         <motion.div
           layout
           className={cn(
-            "grid gap-5",
+            "grid gap-6",
             viewMode === "grid"
               ? "sm:grid-cols-2 xl:grid-cols-3"
               : "sm:grid-cols-2 xl:grid-cols-3 auto-rows-[minmax(20rem,auto)]",
@@ -287,15 +343,16 @@ export function CollectionShowcase({
                 product={product}
                 viewMode={viewMode}
                 tall={viewMode === "masonry" && index % 3 === 1}
-                onQuickAdd={() =>
+                onQuickAdd={() => {
                   addItem({
                     id: product.id,
                     name: product.name,
                     price: product.price,
                     colorway: product.colors[0] ?? "Core",
                     image: product.image,
-                  })
-                }
+                  });
+                  openCart();
+                }}
               />
             ))}
           </AnimatePresence>
@@ -354,29 +411,27 @@ function FilterGroup<T extends string>({
   value,
 }: FilterGroupProps<T>) {
   return (
-    <div className="rounded-[1.4rem] border border-white/10 bg-white/[0.03] p-3">
-      <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white/38">
+    <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.03] p-3">
+      <p className="mb-3 text-[0.64rem] font-semibold uppercase tracking-[0.28em] text-white/36">
         {label}
       </p>
-      <motion.div layout className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         {options.map((option) => (
-          <motion.button
+          <button
             key={option}
-            layout
             type="button"
-            data-cursor="button"
             onClick={() => onChange(option)}
             className={cn(
-              "rounded-pill border px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] transition",
+              "rounded-pill border px-3 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.22em] transition",
               option === value
                 ? "border-brand-accent/36 bg-brand-accent/14 text-brand-accent"
-                : "border-white/10 bg-black/20 text-white/60 hover:text-white",
+                : "border-white/10 bg-black/18 text-white/58 hover:border-white/18 hover:text-white",
             )}
           >
             {option}
-          </motion.button>
+          </button>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -401,149 +456,97 @@ function ProductCard({
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(product.price);
-  const rotateXBase = useMotionValue(0);
-  const rotateYBase = useMotionValue(0);
-  const rotateX = useSpring(rotateXBase, {
-    stiffness: 180,
-    damping: 18,
-    mass: 0.45,
-  });
-  const rotateY = useSpring(rotateYBase, {
-    stiffness: 180,
-    damping: 18,
-    mass: 0.45,
-  });
-
-  const handlePointerMove = (event: {
-    clientX: number;
-    clientY: number;
-    currentTarget: HTMLElement;
-  }) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const percentX = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const percentY = (event.clientY - bounds.top) / bounds.height - 0.5;
-
-    rotateXBase.set(percentY * -8);
-    rotateYBase.set(percentX * 10);
-  };
-
-  const resetTilt = () => {
-    rotateXBase.set(0);
-    rotateYBase.set(0);
-  };
 
   return (
     <motion.article
-      style={{
-        rotateX,
-        rotateY,
-        transformPerspective: 1200,
-        transformStyle: "preserve-3d",
-      }}
       layout
-      initial={{ opacity: 0, y: 28, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 18, scale: 0.96 }}
+      initial={{ opacity: 0, y: 26 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 16 }}
       transition={{
-        duration: 0.45,
-        delay: Math.min(index * 0.08, 0.4),
+        duration: 0.42,
+        delay: Math.min(index * 0.08, 0.32),
         ease: [0.22, 1, 0.36, 1],
       }}
       className={cn(
-        "group relative overflow-hidden rounded-[2.3rem] border border-white/10 bg-brand-mid p-5",
-        tall && "sm:row-span-2 min-h-[38rem]",
-        !tall && "min-h-[31rem]",
+        "group relative overflow-hidden rounded-[2.1rem] border border-white/10 bg-[#181818] p-4 shadow-[0_22px_60px_rgba(0,0,0,0.18)]",
+        tall && "sm:row-span-2 min-h-[36rem]",
+        !tall && "min-h-[30rem]",
         viewMode === "masonry" && !tall && "xl:min-h-[27rem]",
       )}
-      data-cursor="card"
-      data-cursor-label="Open"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={resetTilt}
     >
       <Link
         href={`/collection/${product.id}`}
         aria-label={`View ${product.name}`}
-        className="absolute inset-0 z-20"
+        className="absolute inset-0 z-10"
       />
-      <div
-        className={`absolute inset-0 bg-gradient-to-br ${product.accentClass} opacity-70 transition duration-500 group-hover:opacity-100`}
-      />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_36%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_30%)]" />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div className="relative z-20 flex h-full flex-col">
         <div className="flex items-start justify-between gap-4">
-          <Badge variant="dark">{product.badge}</Badge>
-          <span className="text-xs uppercase tracking-[0.28em] text-white/42">
+          <span className="rounded-pill border border-white/10 bg-white/[0.04] px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-white/56">
+            {product.badge}
+          </span>
+          <span className="text-[0.62rem] uppercase tracking-[0.28em] text-white/38">
             {product.category}
           </span>
         </div>
 
-        <div className={cn("relative flex-1", tall ? "min-h-[19rem]" : "min-h-[16rem]")}>
-          <div className="absolute inset-0 rounded-[1.8rem] border border-white/10 bg-[linear-gradient(180deg,#f4efe4_0%,#ebe5d9_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_22px_44px_rgba(0,0,0,0.18)]" />
-          <div className="absolute inset-[1px] rounded-[1.75rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.92),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.12),transparent_36%)]" />
-          <div className="absolute left-4 top-4 z-10 rounded-pill border border-black/8 bg-black/5 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-black/45">
-            Studio frame
-          </div>
-          <motion.div
-            initial={{ clipPath: "inset(0 0 100% 0 round 1.8rem)" }}
-            animate={{ clipPath: "inset(0 0 0% 0 round 1.8rem)" }}
-            transition={{
-              duration: 0.7,
-              delay: Math.min(index * 0.08, 0.36) + 0.05,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="absolute inset-0 overflow-hidden rounded-[1.8rem]"
-          >
+        <div className={cn("relative mt-4", tall ? "min-h-[18rem]" : "min-h-[15rem]")}>
+          <div className="absolute inset-0 rounded-[1.7rem] border border-white/10 bg-[linear-gradient(180deg,#f8f2e8_0%,#ebe3d6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_18px_40px_rgba(0,0,0,0.14)]" />
+          <div className="absolute inset-[1px] rounded-[1.65rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.92),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.1),transparent_36%)]" />
+          <div className="absolute inset-0 overflow-hidden rounded-[1.7rem]">
             <Image
               src={product.image}
               alt={product.name}
               fill
               sizes="(min-width: 1280px) 28vw, (min-width: 640px) 44vw, 100vw"
-              className={`object-cover p-3 transition-transform duration-700 ease-out group-hover:scale-[1.05] ${product.imageClass}`}
+              className={`object-cover p-3 transition-transform duration-500 ease-out group-hover:scale-[1.03] ${product.imageClass}`}
             />
-          </motion.div>
+          </div>
         </div>
 
-        <div className="mt-auto">
-          <div className="flex items-end justify-between gap-4">
+        <div className="mt-5 flex-1">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="font-display text-4xl uppercase leading-none text-brand-white">
+              <h3 className="font-display text-[2.35rem] uppercase leading-[0.94] text-brand-white">
                 {product.name}
               </h3>
-              <p className="mt-3 text-sm text-white/68">{priceLabel}</p>
+              <p className="mt-2 text-sm text-white/62">{priceLabel}</p>
             </div>
           </div>
 
-            <div className="mt-4 flex items-center gap-2">
+          <div className="mt-4 flex items-center gap-2">
             {product.colors.map((swatch) => (
               <span
                 key={swatch}
-                className="h-4 w-4 rounded-full border border-white/15"
+                className="h-3.5 w-3.5 rounded-full border border-white/15"
                 style={{
                   backgroundColor: colorMap[swatch] ?? "#D9D9D9",
                 }}
+                aria-label={swatch}
               />
             ))}
           </div>
+        </div>
 
-          <motion.div
-            initial={false}
-            className="overflow-hidden"
+        <div className="relative z-20 mt-5 flex items-center gap-3">
+          <Button
+            className="w-full"
+            size="sm"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onQuickAdd();
+            }}
           >
-            <div className="relative z-30 translate-y-6 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-              <Button
-                className="mt-5 w-full"
-                size="sm"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  onQuickAdd();
-                }}
-              >
-                Quick Add
-              </Button>
-            </div>
-          </motion.div>
+            Quick Add
+          </Button>
+          <Link
+            href={`/collection/${product.id}`}
+            className="inline-flex min-w-max items-center justify-center rounded-pill border border-white/10 px-4 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/70 transition hover:border-white/18 hover:text-white"
+          >
+            Details
+          </Link>
         </div>
       </div>
     </motion.article>
